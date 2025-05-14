@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 
 export default function AttendanceForm() {
   const [name, setName] = useState("");
   const [location, setLocation] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [attendanceTime, setAttendanceTime] = useState(null);
+  const [address, setAddress] = useState("");
+  const [attendanceType, setAttendanceType] = useState("in");
 
   const handleGetLocation = () => {
     if (!navigator.geolocation) {
@@ -15,9 +18,20 @@ export default function AttendanceForm() {
     }
 
     navigator.geolocation.getCurrentPosition(
-      (position) => {
+      async (position) => {
         const { latitude, longitude } = position.coords;
         setLocation({ latitude, longitude });
+
+        try {
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
+          );
+          const data = await res.json();
+          setAddress(data.display_name);
+        } catch (error) {
+          console.error("Error getting address:", error);
+          setAddress("Unable to fetch address.");
+        }
       },
       (error) => {
         alert("An error occurred while obtaining the location.");
@@ -36,6 +50,19 @@ export default function AttendanceForm() {
     const now = new Date();
     setAttendanceTime(now);
     setSubmitted(true);
+
+    const newRecord = {
+      name,
+      type: attendanceType,
+      time: now.toISOString(),
+      latitude: location.latitude,
+      longitude: location.longitude,
+      address,
+    };
+
+    const existingRecords = JSON.parse(localStorage.getItem("attendanceRecords")) || [];
+    existingRecords.push(newRecord);
+    localStorage.setItem("attendanceRecords", JSON.stringify(existingRecords));
   };
 
   const formatTime = (date) => {
@@ -67,18 +94,46 @@ export default function AttendanceForm() {
             </button>
 
             {location && (
-              <div className="w-full h-64 rounded overflow-hidden border">
-                <iframe
-                  title="Location Map"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  src={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&z=15&output=embed`}
-                ></iframe>
+              <div>
+                <div className="w-full h-64 rounded overflow-hidden border">
+                  <iframe
+                    title="Location Map"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    src={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&z=15&output=embed`}
+                  ></iframe>
+                </div>
+                {address && (
+                  <p className="text-sm text-gray-600 mt-2">📍 Address: {address}</p>
+                )}
               </div>
             )}
+
+            <div className="flex flex-col gap-2">
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="attendanceType"
+                  value="in"
+                  checked={attendanceType === "in"}
+                  onChange={() => setAttendanceType("in")}
+                />
+                <span>⏰ Punch In</span>
+              </label>
+              <label className="flex items-center space-x-2">
+                <input
+                  type="radio"
+                  name="attendanceType"
+                  value="out"
+                  checked={attendanceType === "out"}
+                  onChange={() => setAttendanceType("out")}
+                />
+                <span>🔁 Punch Out</span>
+              </label>
+            </div>
 
             <button
               type="submit"
@@ -90,27 +145,38 @@ export default function AttendanceForm() {
         ) : (
           <div className="text-center space-y-4">
             <p className="text-lg font-semibold text-green-700">
-              ✅ Attendance has been successfully registered!
+              ✅ {attendanceType === "in" ? "Punch In" : "Punch Out"} has been successfully registered!
             </p>
-            <p className="bg-green-100 py-1 rounded">{name}</p>
+            <div className="grid grid-cols-1 gap-2">
+              <p className="bg-green-100 py-1 rounded">🙍‍♀️ Name: {name}</p>
+              <p className="bg-blue-100 py-1 rounded">🕓 Time: {formatTime(attendanceTime)}</p>
+              <p className="bg-yellow-100 py-1 rounded">📄 Type: {attendanceType === "in" ? "Punch In" : "Punch Out"}</p>
+              {address && (
+                <p className="text-sm text-gray-600 bg-gray-100 py-1 rounded">📍 Address: {address}</p>
+              )}
+            </div>
 
             {location && (
-              <div className="w-full h-64 rounded overflow-hidden border">
-                <iframe
-                  title="Location Map"
-                  width="100%"
-                  height="100%"
-                  style={{ border: 0 }}
-                  loading="lazy"
-                  allowFullScreen
-                  src={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&z=15&output=embed`}
-                ></iframe>
+              <div>
+                <div className="w-full h-64 rounded overflow-hidden border">
+                  <iframe
+                    title="Location Map"
+                    width="100%"
+                    height="100%"
+                    style={{ border: 0 }}
+                    loading="lazy"
+                    allowFullScreen
+                    src={`https://www.google.com/maps?q=${location.latitude},${location.longitude}&z=15&output=embed`}
+                  ></iframe>
+                </div>
               </div>
             )}
 
-            {attendanceTime && (
-              <p>🕒 Attendance Time: {formatTime(attendanceTime)}</p>
-            )}
+            <Link href="/history">
+              <button className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                📜 View Attendance History
+              </button>
+            </Link>
 
             <button
               onClick={() => {
@@ -119,7 +185,7 @@ export default function AttendanceForm() {
               }}
               className="mt-4 bg-red-600 text-white py-2 px-4 rounded hover:bg-red-700"
             >
-              Sign out 
+              Sign out
             </button>
           </div>
         )}
