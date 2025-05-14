@@ -14,7 +14,7 @@ const page = ({ params }) => {
     return notFound();
   }
   return (
-    <div className=" w-full p-4">
+    <div className=" w-full h-screen p-4">
       <div className="mx-auto  bg-white shadow-md rounded-2xl p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4 text-gray-700">
           <div>
