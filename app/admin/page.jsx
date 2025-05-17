@@ -1,4 +1,5 @@
 import Card from "../(components)/Card";
+import { Chart } from "../(components)/Chart";
 
 const page = () => {
   const users = [
@@ -44,11 +45,12 @@ const page = () => {
     },
   ];
   return (
-    <div className="grid grid-cols-1  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-[70%] h-fit justify-items-center m-[2%] gap-4">
+    <div className="grid grid-cols-1 mr-[2%] sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 w-[70%] h-fit justify-items-center absolute  lg:mr-[12%] m-[2%] gap-4">
     
       {users.map((user) => (
         <Card key={user.id} name={user.name} role={user.role} link={user.id} />
       ))}
+   
     </div>
   );
 };

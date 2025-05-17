@@ -2,7 +2,7 @@ import React from 'react'
 
 const Form = (props) => {
   return (
-   <div className="max-w-[300px] bg-[#f1f7fe] overflow-hidden rounded-2xl text-[#010101]">
+   <div className="w-[700px]  bg-[#f1f7fe] overflow-hidden rounded-2xl text-[#010101]">
   <form className="relative flex flex-col px-6 pt-8 pb-6 gap-4 text-center">
     <h2 className="font-bold text-[1.6rem]">{props.title}</h2>
     <p className="text-base text-[#666]">{props.subtitle}</p>
@@ -34,7 +34,7 @@ const Form = (props) => {
 
     <button
       type="submit"
-      className="bg-[#0066ff] text-white border-0 rounded-full px-4 py-2.5 text-base font-semibold cursor-pointer transition-colors duration-300 hover:bg-[#005ce6]"
+      className="bg-[#1e2939] text-white border-0 rounded-full px-4 py-2.5 text-base font-semibold cursor-pointer transition-colors duration-300 hover:bg-[#353c46]"
     >
       Create User
     </button>
