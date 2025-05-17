@@ -4,7 +4,6 @@ import { NextResponse } from "next/server";
 export async function updateSession(request) {
   let supabaseResponse = NextResponse.next({ request });
 
-  // استخدم `await` هنا للحصول على الكوكيز بشكل صحيح
   const cookieStore = await request.cookies;
 
   const supabase = createServerClient(
@@ -34,44 +33,38 @@ export async function updateSession(request) {
   } = await supabase.auth.getUser();
 
   if (error || !user) {
-    console.error("Error fetching user:", error);
-    if (
-      !request.nextUrl.pathname.startsWith("/login") &&
-      !request.nextUrl.pathname.startsWith("/auth")
-    ) {
-      const url = request.nextUrl.clone();
-      url.pathname = "/login"; // اعادة التوجيه لصفحة تسجيل الدخول
-      return NextResponse.redirect(url);
-    }
-  }
-
-  if (user) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("role")
-      .eq("id", user.id)
-      .single();
-
-    const role = profile?.role;
     const pathname = request.nextUrl.pathname;
 
-    if (pathname.startsWith("/admin") && role !== "admin") {
+    if (!pathname.startsWith("/login") && !pathname.startsWith("/auth")) {
       const url = request.nextUrl.clone();
-      url.pathname = "/user";
+      url.pathname = "/login";
       return NextResponse.redirect(url);
     }
 
-    if (pathname.startsWith("/user") && role !== "user") {
-      const url = request.nextUrl.clone();
-      url.pathname = "/admin";
-      return NextResponse.redirect(url);
-    }
+    return supabaseResponse;
+  }
 
-    if (pathname === "/") {
-      const url = request.nextUrl.clone();
-      url.pathname = role === "admin" ? "/admin" : "/user";
-      return NextResponse.redirect(url);
-    }
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("role")
+    .eq("id", user.id)
+    .single();
+
+  const role = profile?.role;
+  const pathname = request.nextUrl.pathname;
+
+  // توجيه من الصفحة الرئيسية حسب الدور
+  if (pathname === "/") {
+    const url = request.nextUrl.clone();
+    url.pathname = role === "admin" ? "/admin" : "/user";
+    return NextResponse.redirect(url);
+  }
+
+  // حماية صفحات الأدمن فقط
+  if (pathname.startsWith("/admin") && role !== "admin") {
+    const url = request.nextUrl.clone();
+    url.pathname = "/user";
+    return NextResponse.redirect(url);
   }
 
   return supabaseResponse;

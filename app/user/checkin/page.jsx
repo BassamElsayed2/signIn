@@ -23,11 +23,19 @@ export default async function CheckinPage() {
     .eq("user_id", user.id)
     .order("created_at", { ascending: false });
 
+  const { data: absence } = await supabase
+    .from("absence")
+    .select("*")
+    .eq("user_id", user.id)
+    .order("created_at", { ascending: false });
+
   if (!records) {
     return <p>لا يوجد تسجيل حضور</p>;
   }
 
   console.log(records);
+  console.log(absence);
+  console.log(profile);
 
   return (
     <div className="p-6">
