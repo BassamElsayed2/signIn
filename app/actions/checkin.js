@@ -42,7 +42,7 @@ export async function checkInUser(latitude, longitude, time) {
 
         absentRecords.push({
           user_id: user.id,
-          status: "absent",
+
           created_at: missedDay.toISOString(),
         });
       }
@@ -62,10 +62,10 @@ export async function checkInUser(latitude, longitude, time) {
     .from("attendance")
     .select("*")
     .eq("user_id", user.id)
-    .gte("created_at", today.toISOString())
-    .eq("status", "present");
+    .gte("created_at", today.toISOString());
 
   if (checkError) {
+    console.error("خطأ في استعلام الحضور السابق:", checkError);
     return { success: false, error: "خطأ أثناء التحقق من الحضور السابق" };
   }
 
@@ -78,7 +78,6 @@ export async function checkInUser(latitude, longitude, time) {
     user_id: user.id,
     location: { latitude, longitude },
     created_at: time,
-    status: "present",
   });
 
   if (insertError) {

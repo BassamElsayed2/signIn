@@ -1,38 +1,18 @@
-import CreateUserForm from "@/components/CreateUserForm";
-import SignOutButton from "@/components/SignOut";
-import { createClient } from "@/utils/supabase/server";
-import { redirect } from "next/navigation";
+import AbsenceChartPage from "@/components/ChartAreaInteractive";
+
+import { SectionCards } from "@/components/SectionCards";
 
 export default async function AdminUsersPage() {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) redirect("/login");
-
-  // تحقق من أن المستخدم أدمن، مثلاً من خلال رول معين في جدول profiles
-  const { data: profile } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user.id)
-    .single();
-
-  if (profile?.role !== "admin") redirect("/");
-
-  const { data: users } = await supabase.from("profiles").select("*");
-
-  const { data: attendance } = await supabase.from("attendance").select("*");
-  const { data: absence } = await supabase.from("absence").select("*");
-
-  console.log(profile);
-  console.log(users);
-  console.log(attendance);
-  console.log(absence);
   return (
-    <div className="p-6">
-      <SignOutButton />
-      <CreateUserForm />
+    <div className="flex flex-1 flex-col">
+      <div className="@container/main flex flex-1 flex-col gap-2">
+        <div className="flex flex-col gap-4 py-4 md:gap-6 md:py-6">
+          <SectionCards />
+          <div className="px-4 lg:px-6">
+            <AbsenceChartPage />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

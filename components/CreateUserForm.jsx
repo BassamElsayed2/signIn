@@ -13,8 +13,9 @@ import {
   SelectValue,
 } from "./ui/select";
 import { Button } from "./ui/button";
+import { toast } from "sonner";
 
-export default function CreateUserForm() {
+export default function CreateUserForm({ setOpen }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
@@ -28,9 +29,11 @@ export default function CreateUserForm() {
     const result = await createUser(formData);
 
     if (result.success) {
-      router.push("/admin"); // أو أي صفحة للعودة
+      toast.success("تم إنشاء المستخدم بنجاح");
+      router.push("/admin");
     } else {
       setError(result.error);
+      toast.error("فشل في إنشاء المستخدم: " + result.error);
     }
 
     setLoading(false);
@@ -39,19 +42,27 @@ export default function CreateUserForm() {
   return (
     <form onSubmit={handleSubmit} className="max-w-md space-y-4">
       <div>
-        <Label htmlFor="full_name">الاسم الكامل</Label>
+        <Label htmlFor="full_name" className="mb-2">
+          الاسم الكامل
+        </Label>
         <Input name="full_name" required />
       </div>
       <div>
-        <Label htmlFor="email">البريد الإلكتروني</Label>
+        <Label htmlFor="email" className="mb-2">
+          البريد الإلكتروني
+        </Label>
         <Input name="email" type="email" required />
       </div>
       <div>
-        <Label htmlFor="password">كلمة المرور</Label>
+        <Label htmlFor="password" className="mb-2">
+          كلمة المرور
+        </Label>
         <Input name="password" type="password" required />
       </div>
       <div>
-        <Label htmlFor="role">الدور</Label>
+        <Label htmlFor="role" className="mb-2">
+          الدور
+        </Label>
         <Select name="role" required>
           <SelectTrigger>
             <SelectValue placeholder="اختر الدور" />
@@ -59,7 +70,7 @@ export default function CreateUserForm() {
           <SelectContent>
             <SelectItem value="admin">Admin</SelectItem>
             <SelectItem value="developer">Developer</SelectItem>
-            <SelectItem value="user">User</SelectItem>
+            <SelectItem value="user">It</SelectItem>
             <SelectItem value="other">Other</SelectItem>
           </SelectContent>
         </Select>
@@ -67,9 +78,19 @@ export default function CreateUserForm() {
 
       {error && <p className="text-red-500">{error}</p>}
 
-      <Button type="submit" disabled={loading}>
-        {loading ? "جاري التسجيل..." : "تسجيل مستخدم"}
-      </Button>
+      <div className="flex justify-between items-center">
+        <Button
+          type="button"
+          onClick={() => setOpen(false)}
+          disabled={loading}
+          variant="ghost"
+        >
+          {"خروج"}
+        </Button>
+        <Button type="submit" disabled={loading}>
+          {loading ? "جاري التسجيل..." : "تسجيل مستخدم"}
+        </Button>
+      </div>
     </form>
   );
 }
