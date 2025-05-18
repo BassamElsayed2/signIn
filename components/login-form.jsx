@@ -1,23 +1,30 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useActionState, useState, useTransition } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/login/actions";
-import { Eye, EyeOff } from "lucide-react"; // أو أي أيقونة مناسبة
+import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({ className, ...props }) {
   const [state, formAction] = useActionState(login, { error: null });
   const [showPassword, setShowPassword] = useState(false);
+  const [isPending, startTransition] = useTransition();
+
+  const handleSubmit = (formData) => {
+    startTransition(() => {
+      formAction(formData);
+    });
+  };
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8" action={formAction}>
+          <form className="p-6 md:p-8" action={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <h1 className="text-2xl font-bold">مرحبا</h1>
@@ -59,8 +66,8 @@ export function LoginForm({ className, ...props }) {
                 <div className="text-sm text-red-500">{state.error}</div>
               )}
 
-              <Button type="submit" className="w-full">
-                تسجيل الدخول
+              <Button type="submit" className="w-full" disabled={isPending}>
+                {isPending ? "جاري الدخول..." : "تسجيل الدخول"}
               </Button>
             </div>
           </form>

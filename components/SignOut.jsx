@@ -15,7 +15,10 @@ export default function SignOutButton() {
   };
 
   return (
-    <button onClick={handleSignOut} className="text-red-500 font-bold flex items-center justify-center mb-5 gap-2">
+    <button
+      onClick={handleSignOut}
+      className="text-red-500 font-bold flex items-center justify-center mb-5 gap-2 cursor-pointer"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"

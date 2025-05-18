@@ -70,7 +70,7 @@ export default function CreateUserForm({ setOpen }) {
           <SelectContent>
             <SelectItem value="admin">Admin</SelectItem>
             <SelectItem value="developer">Developer</SelectItem>
-            <SelectItem value="user">It</SelectItem>
+            <SelectItem value="it">It</SelectItem>
             <SelectItem value="other">Other</SelectItem>
           </SelectContent>
         </Select>

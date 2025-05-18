@@ -1,7 +1,8 @@
 import React from "react";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
-import UserAttendanceChart from "@/components/UserChartHistroy";
+
+import UserAttendanceHistory from "@/components/UserAttendanceHistory";
 
 // إضافة Google Maps React component
 // يمكن تستخدم مكتبة google-maps-react أو @react-google-maps/api
@@ -118,8 +119,8 @@ export default async function AdminUserDetailPage({ params }) {
           </div>
         </div>
 
-        {/* <div className="justify-items-center">
-          <UserAttendanceChart
+        {/* <div className="justify-items-center mt-10 w-full">
+          <UserAttendanceHistory
             attendance={attendance || []}
             absence={absence || []}
           />

@@ -40,7 +40,7 @@ export default function CheckInClient() {
     <button
       onClick={handleCheckIn}
       disabled={loading}
-      className="bg-blue-600 text-white py-2 px-4 rounded"
+      className="w-full bg-black text-white py-3 px-6 rounded-xl shadow-md hover:bg-gray-800 hover:shadow-lg active:scale-95 transition duration-200 ease-in-out disabled:opacity-50"
     >
       {loading ? "جاري التسجيل..." : "تسجيل الحضور"}
     </button>
