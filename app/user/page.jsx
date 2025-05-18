@@ -1,5 +1,5 @@
 import CheckInClient from "@/components/CheckInButton";
-
+import NavBar from "@/components/NavBar";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
 
@@ -24,7 +24,6 @@ export default async function UserPage() {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  // نتحقق إذا سجل المستخدم اليوم
   const { data: existingRecords } = await supabase
     .from("attendance")
     .select("*")
@@ -32,15 +31,22 @@ export default async function UserPage() {
     .gte("created_at", today.toISOString())
     .limit(1);
 
-  // لو سجل اليوم، نعيد التوجيه لصفحة تفاصيل الحضور
   if (existingRecords && existingRecords.length > 0) {
-    redirect("/user/checkin"); // غيّرها حسب مسار صفحتك لعرض تفاصيل الحضور
+    redirect("/user/checkin");
   }
 
   return (
-    <div className="p-6">
-      <h1 className="text-xl font-bold mb-4">أهلاً {profile?.full_name}</h1>
-      <CheckInClient />
-    </div>
+    <section className="min-h-screen flex items-center justify-center bg-gradient-to-br from-white via-gray-100 to-gray-300 px-4 py-12">
+      <NavBar/>
+      <div className="text-center bg-white border border-gray-200 p-10 rounded-2xl shadow-md max-w-md w-full">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          مرحباً، {profile?.full_name} 👋
+        </h1>
+        <p className="text-lg text-gray-700 mb-6">
+          جاهز لتسجيل حضورك اليوم؟
+        </p>
+        <CheckInClient />
+      </div>
+    </section>
   );
 }
