@@ -2,6 +2,8 @@
 
 import { createClient } from "@/utils/supabase/server";
 
+import { revalidatePath } from "next/cache";
+
 export async function toggleOutdoor(formData) {
   const userId = formData.get("userId");
 
@@ -22,4 +24,6 @@ export async function toggleOutdoor(formData) {
     .from("profiles")
     .update({ outDoor: newValue })
     .eq("id", userId);
+
+  revalidatePath(`/admin/user/${userId}`);
 }

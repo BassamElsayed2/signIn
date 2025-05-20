@@ -81,17 +81,32 @@ export default function UserListTable() {
   }, [fetchAdminData]);
 
   const rowData = filteredUsers.map((user, index) => {
-    const attendedToday = attendance.some(
+    const userEntriesToday = attendance.filter(
       (entry) =>
         entry.user_id === user.id && entry.timestamp?.split("T")[0] === today
     );
+
+    const hasLoggedOutToday = userEntriesToday.some(
+      (entry) => entry.logout_time?.split("T")[0] === today
+    );
+
+    let حالة_بصرية;
+    if (hasLoggedOutToday) {
+      حالة_بصرية = "انصرف";
+    } else if (userEntriesToday.length > 0) {
+      حالة_بصرية = "حضر";
+    } else {
+      حالة_بصرية = "لم يحضر بعد";
+    }
 
     return {
       id: user.id,
       "#": index + 1,
       الاسم: user.full_name,
       الدور: user.role,
-      حالة_بصرية: attendedToday ? "حضر" : "لم يحضر بعد",
+      حالة_بصرية,
+      hasLoggedOutToday,
+      isPresent: userEntriesToday.length > 0,
       _fullUser: user,
     };
   });
@@ -123,19 +138,23 @@ export default function UserListTable() {
     () =>
       [
         { field: "#", width: 40 },
-        { field: "الاسم", flex: 2},
+        { field: "الاسم", flex: 2 },
         !isMobile && { field: "الدور", flex: 1 },
         {
           headerName: "الحالة",
           field: "حالة_بصرية",
           flex: 1,
           cellRenderer: (params) => {
-            const isPresent = params.value === "حضر";
+            const { isPresent, hasLoggedOutToday } = params.data;
             return (
               <span className="flex items-center mt-2 justify-center gap-2">
                 <span
                   className={`w-3 h-3 rounded-full ${
-                    isPresent ? "bg-green-500" : "bg-gray-800"
+                    hasLoggedOutToday
+                      ? "bg-blue-500"
+                      : isPresent
+                      ? "bg-green-500"
+                      : "bg-gray-800"
                   }`}
                 />
                 <span className="hidden md:block">{params.value}</span>
@@ -146,7 +165,7 @@ export default function UserListTable() {
         {
           headerName: "الإجراءات",
           field: "actions",
-         flex:2,
+          flex: 2,
           cellRenderer: ActionCellRenderer,
           sortable: false,
           filter: false,
@@ -174,7 +193,6 @@ export default function UserListTable() {
           defaultColDef={{ sortable: true, filter: false }}
           pagination={isMobile ? false : true}
           quickFilterText={searchInput}
-          
         />
       </div>
 

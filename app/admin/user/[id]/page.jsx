@@ -92,23 +92,23 @@ export default async function AdminUserDetailPage({ params }) {
             <p className="font-semibold">وقت الوصول:</p>
             <p>{getArrivalStatus()}</p>
           </div>
-        </div>
 
-        <form action={toggleOutdoor}>
-          <input type="hidden" name="userId" value={userId} />
-          <button
-            type="submit"
-            className={`mt-4 px-4 py-2 rounded text-white ${
-              profile.outDoor
-                ? "bg-red-600 hover:bg-red-700"
-                : "bg-green-600 hover:bg-green-700"
-            }`}
-          >
-            {profile.outDoor
-              ? "تعطيل وضع خارج النطاق"
-              : "تفعيل وضع خارج النطاق"}
-          </button>
-        </form>
+          <form action={toggleOutdoor}>
+            <input type="hidden" name="userId" value={userId} />
+            <button
+              type="submit"
+              className={`mt-4 px-4 py-2 rounded text-white ${
+                profile.outDoor
+                  ? "bg-red-600 hover:bg-red-700"
+                  : "bg-green-600 hover:bg-green-700"
+              }`}
+            >
+              {profile.outDoor
+                ? "تعطيل وضع خارج النطاق"
+                : "تفعيل وضع خارج النطاق"}
+            </button>
+          </form>
+        </div>
 
         <div>
           <p className="font-semibold text-gray-700 mb-2">
