@@ -1,5 +1,7 @@
+import CheckinCountdown from "@/components/CheckinCountdown";
+import LogoutButton from "@/components/CheckOut";
 import NavBar from "@/components/NavBar";
-import SignOutButton from "@/components/SignOut";
+
 import { createClient } from "@/utils/supabase/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -27,16 +29,6 @@ export default async function CheckinPage() {
     .eq("user_id", user.id)
     .order("timestamp", { ascending: false });
 
-  const { data: absence } = await supabase
-    .from("absence")
-    .select("*")
-    .eq("user_id", user.id)
-    .order("timestamp", { ascending: false });
-
-  if (!records) {
-    return <p>لا يوجد تسجيل حضور</p>;
-  }
-
   if (!records || records.length === 0) {
     return (
       <div className="p-6 text-center text-gray-500">
@@ -49,6 +41,10 @@ export default async function CheckinPage() {
   const { latitude, longitude } = lastRecord.location || {};
   let fullAddress = lastRecord.address;
 
+  if (lastRecord.logout_time) {
+    redirect("/user/history");
+  }
+
   if (latitude && longitude && !fullAddress) {
     try {
       const res = await fetch(
@@ -60,6 +56,24 @@ export default async function CheckinPage() {
       console.error("حدث خطأ أثناء جلب العنوان:", error);
     }
   }
+
+  function getWorkingHoursByRole(role) {
+    switch (role) {
+      case "developer":
+        return 5;
+      case "it":
+        return 7;
+      default:
+        return 5;
+    }
+  }
+
+  const loginTime = new Date(lastRecord.timestamp);
+  const hoursToAdd = getWorkingHoursByRole(profile?.role);
+  const logoutDeadline = new Date(
+    loginTime.getTime() + hoursToAdd * 60 * 60 * 1000
+  );
+
   return (
     <div className="pt-26 p-8 max-w-xl mx-auto bg-white rounded-xl shadow-md text-center">
       <NavBar />
@@ -74,7 +88,7 @@ export default async function CheckinPage() {
         </p>
         <p className="text-lg">
           <span className="font-semibold text-gray-900">🕒 الوقت:</span>{" "}
-          {new Date(records[0].timestamp).toLocaleTimeString("ar-EG", {
+          {new Date(lastRecord.timestamp).toLocaleTimeString("ar-EG", {
             hour: "2-digit",
             minute: "2-digit",
           })}
@@ -106,6 +120,22 @@ export default async function CheckinPage() {
           ></iframe>
         </div>
       )}
+
+      <CheckinCountdown
+        role={profile?.role}
+        checkInTime={lastRecord.timestamp}
+        attendanceId={lastRecord.id}
+        checkInLocation={{
+          latitude,
+          longitude,
+        }}
+        forceAllowTimer={profile.outDoor}
+      />
+      <LogoutButton
+        role={profile?.role}
+        checkInTime={lastRecord.timestamp}
+        attendanceId={lastRecord.id}
+      />
 
       <Link href="/user/history">
         <button className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 mt-6 transition">

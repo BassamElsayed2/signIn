@@ -2,7 +2,8 @@ import React from "react";
 import { createClient } from "@/utils/supabase/server";
 import { notFound } from "next/navigation";
 
-import UserAttendanceHistory from "@/components/UserAttendanceHistory";
+import HistoryCalendar from "@/components/HistoryCalendar";
+import { toggleOutdoor } from "@/app/actions/disableOutdoor";
 
 // إضافة Google Maps React component
 // يمكن تستخدم مكتبة google-maps-react أو @react-google-maps/api
@@ -26,13 +27,6 @@ export default async function AdminUserDetailPage({ params }) {
   // جلب سجلات الحضور
   const { data: attendance, error: attendanceError } = await supabase
     .from("attendance")
-    .select("*")
-    .eq("user_id", userId)
-    .order("timestamp", { ascending: false });
-
-  // جلب سجلات الغياب
-  const { data: absence, error: absenceError } = await supabase
-    .from("absence")
     .select("*")
     .eq("user_id", userId)
     .order("timestamp", { ascending: false });
@@ -79,6 +73,8 @@ export default async function AdminUserDetailPage({ params }) {
   // إحداثيات آخر حضور
   const lastLocation = attendance?.[0]?.location;
 
+  console.log(profile.outDoor);
+
   return (
     <div className="w-full h-screen p-4">
       <div className="rounded-2xl p-6 space-y-6">
@@ -98,6 +94,22 @@ export default async function AdminUserDetailPage({ params }) {
           </div>
         </div>
 
+        <form action={toggleOutdoor}>
+          <input type="hidden" name="userId" value={userId} />
+          <button
+            type="submit"
+            className={`mt-4 px-4 py-2 rounded text-white ${
+              profile.outDoor
+                ? "bg-red-600 hover:bg-red-700"
+                : "bg-green-600 hover:bg-green-700"
+            }`}
+          >
+            {profile.outDoor
+              ? "تعطيل وضع خارج النطاق"
+              : "تفعيل وضع خارج النطاق"}
+          </button>
+        </form>
+
         <div>
           <p className="font-semibold text-gray-700 mb-2">
             الموقع على الخريطة:
@@ -109,7 +121,6 @@ export default async function AdminUserDetailPage({ params }) {
                 height="100%"
                 loading="lazy"
                 allowFullScreen
-                // src={`https://www.google.com/maps/embed/v1/view?key=YOUR_GOOGLE_MAPS_API_KEY&center=${lastLocation.latitude},${lastLocation.longitude}&zoom=16&maptype=roadmap`}
                 src={`https://www.google.com/maps?q=${lastLocation.latitude},${lastLocation.longitude}&hl=es;z=14&output=embed`}
                 title="موقع المستخدم"
               ></iframe>
@@ -119,12 +130,16 @@ export default async function AdminUserDetailPage({ params }) {
           </div>
         </div>
 
-        {/* <div className="justify-items-center mt-10 w-full">
-          <UserAttendanceHistory
-            attendance={attendance || []}
-            absence={absence || []}
-          />
-        </div> */}
+        <div className="max-w-4xl mx-auto p-6 pt-28">
+          <div className="bg-white rounded-2xl shadow-lg p-6">
+            <h2 className="text-2xl font-bold mb-6">📅 تقويم الحضور</h2>
+            {userId ? (
+              <HistoryCalendar userId={userId} />
+            ) : (
+              <p className="text-center">جاري التحميل...</p>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
