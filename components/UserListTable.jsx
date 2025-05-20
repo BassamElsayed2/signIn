@@ -4,6 +4,8 @@ import React, { useMemo, useState, useCallback, useEffect } from "react";
 import { useAdminData } from "./AdminDataContext";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
+import { useIsMobile } from "@/hooks/use-mobile";
+
 ModuleRegistry.registerModules([AllCommunityModule]);
 
 import { Button } from "@/components/ui/button";
@@ -26,7 +28,7 @@ export default function UserListTable() {
   // fetchAdminData: دالة داخل السياق تعيد تحميل البيانات (users, attendance)
 
   const today = new Date().toISOString().split("T")[0];
-
+  const isMobile = useIsMobile();
   const [selectedUser, setSelectedUser] = useState(null);
   const [isDetailsDialogOpen, setIsDetailsDialogOpen] = useState(false);
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
@@ -117,40 +119,40 @@ export default function UserListTable() {
       </div>
     );
   };
-
   const colDefs = useMemo(
-    () => [
-      { field: "#", width: 80 },
-      { field: "الاسم", flex: 1 },
-      { field: "الدور", flex: 1 },
-      {
-        headerName: "الحالة",
-        field: "حالة_بصرية",
-        flex: 1,
-        cellRenderer: (params) => {
-          const isPresent = params.value === "حضر";
-          return (
-            <span className="flex items-center gap-2">
-              <span
-                className={`w-3 h-3 rounded-full ${
-                  isPresent ? "bg-green-500" : "bg-gray-800"
-                }`}
-              />
-              <span>{params.value}</span>
-            </span>
-          );
+    () =>
+      [
+        { field: "#", width: 40 },
+        { field: "الاسم", flex: 2},
+        !isMobile && { field: "الدور", flex: 1 },
+        {
+          headerName: "الحالة",
+          field: "حالة_بصرية",
+          flex: 1,
+          cellRenderer: (params) => {
+            const isPresent = params.value === "حضر";
+            return (
+              <span className="flex items-center mt-2 justify-center gap-2">
+                <span
+                  className={`w-3 h-3 rounded-full ${
+                    isPresent ? "bg-green-500" : "bg-gray-800"
+                  }`}
+                />
+                <span className="hidden md:block">{params.value}</span>
+              </span>
+            );
+          },
         },
-      },
-      {
-        headerName: "الإجراءات",
-        field: "actions",
-        width: 130,
-        cellRenderer: ActionCellRenderer,
-        sortable: false,
-        filter: false,
-      },
-    ],
-    [handleShowDetails, handleOpenDeleteDialog]
+        {
+          headerName: "الإجراءات",
+          field: "actions",
+         flex:2,
+          cellRenderer: ActionCellRenderer,
+          sortable: false,
+          filter: false,
+        },
+      ].filter(Boolean),
+    [isMobile, handleShowDetails, handleOpenDeleteDialog]
   );
 
   return (
@@ -169,10 +171,10 @@ export default function UserListTable() {
           rowData={rowData}
           columnDefs={colDefs}
           domLayout="autoHeight"
-          defaultColDef={{ sortable: true, filter: true }}
-          pagination={true}
+          defaultColDef={{ sortable: true, filter: false }}
+          pagination={isMobile ? false : true}
           quickFilterText={searchInput}
-          paginationPageSize={10}
+          
         />
       </div>
 

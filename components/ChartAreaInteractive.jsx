@@ -10,6 +10,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { useAdminData } from "@/components/AdminDataContext";
 import {
   Card,
@@ -30,7 +31,7 @@ import { useState } from "react";
 export default function AttendanceBarChart() {
   const { users, attendance } = useAdminData();
   const [range, setRange] = useState("week");
-
+const isMobile = useIsMobile();
   const nonAdminUsers = users.filter((user) => user.role !== "admin");
   const totalUsers = nonAdminUsers.length;
 
@@ -104,8 +105,8 @@ export default function AttendanceBarChart() {
   const chartData = generateChartData();
 
   return (
-    <div className="p-6 max-w-5xl mx-auto">
-      <Card>
+    <div className="mx-auto p-0">
+      <Card >
         <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <CardTitle>تغير نسب الحضور والغياب</CardTitle>
@@ -122,12 +123,12 @@ export default function AttendanceBarChart() {
           </Select>
         </CardHeader>
 
-        <CardContent className="h-[360px]">
-          <ResponsiveContainer width="100%" height="100%">
+        <CardContent className="h-[360px] mr-4 p-0 flex items-center justify-center">
+          <ResponsiveContainer width="100%" height="100%" >
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="name" />
-              <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+             {!isMobile && <XAxis dataKey="name" /> } 
+             {!isMobile &&  <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />}
               <Tooltip formatter={(value) => `${value}%`} />
               <Legend />
               <Bar dataKey="الحضور" fill="#000" radius={[4, 4, 0, 0]} />
