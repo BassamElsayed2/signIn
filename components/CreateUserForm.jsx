@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { createUser } from "@/app/actions/createUser";
@@ -19,6 +20,7 @@ export default function CreateUserForm({ setOpen }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+  const t = useTranslations("admin.form");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,11 +31,11 @@ export default function CreateUserForm({ setOpen }) {
     const result = await createUser(formData);
 
     if (result.success) {
-      toast.success("تم إنشاء المستخدم بنجاح");
+      toast.success(t("success"));
       router.push("/admin");
     } else {
       setError(result.error);
-      toast.error("فشل في إنشاء المستخدم: " + result.error);
+      toast.error(t("error_prefix") + result.error);
     }
 
     setLoading(false);
@@ -43,35 +45,35 @@ export default function CreateUserForm({ setOpen }) {
     <form onSubmit={handleSubmit} className="max-w-md space-y-4">
       <div>
         <Label htmlFor="full_name" className="mb-2">
-          الاسم الكامل
+          {t("full_name")}
         </Label>
         <Input name="full_name" required />
       </div>
       <div>
         <Label htmlFor="email" className="mb-2">
-          البريد الإلكتروني
+          {t("email")}
         </Label>
         <Input name="email" type="email" required />
       </div>
       <div>
         <Label htmlFor="password" className="mb-2">
-          كلمة المرور
+          {t("password")}
         </Label>
         <Input name="password" type="password" required />
       </div>
       <div>
         <Label htmlFor="role" className="mb-2">
-          الدور
+          {t("role")}
         </Label>
         <Select name="role" required>
           <SelectTrigger>
-            <SelectValue placeholder="اختر الدور" />
+            <SelectValue placeholder={t("select_role")}  />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="admin">Admin</SelectItem>
-            <SelectItem value="developer">Developer</SelectItem>
-            <SelectItem value="it">It</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
+            <SelectItem value="admin">{t("admin")}</SelectItem>
+            <SelectItem value="developer">{t("developer")}</SelectItem>
+            <SelectItem value="it">{t("it")}</SelectItem>
+            <SelectItem value="other">{t("other")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -85,10 +87,10 @@ export default function CreateUserForm({ setOpen }) {
           disabled={loading}
           variant="ghost"
         >
-          {"خروج"}
+          {t("cancel")}
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? "جاري التسجيل..." : "تسجيل مستخدم"}
+        {loading ? t("submitting") : t("submit")}
         </Button>
       </div>
     </form>

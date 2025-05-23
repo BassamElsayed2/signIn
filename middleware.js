@@ -1,12 +1,20 @@
 import { updateSession } from "@/utils/supabase/middleware";
+import createMiddleware from 'next-intl/middleware';
+
+
 
 export async function middleware(request) {
   return await updateSession(request);
 }
 
 export const config = {
-  matcher: [
-    "/api/:path*",
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
+  matcher: ['/', '/(ar|en)/:path*']
 };
+
+
+
+export default createMiddleware({
+  locales: ['en', 'ar'],
+  defaultLocale: 'ar',
+  localeDetection: true,
+});

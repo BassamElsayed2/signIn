@@ -1,5 +1,5 @@
 "use client";
-
+import {useTranslations} from 'next-intl';
 import { TrendingDownIcon, TrendingUpIcon } from "lucide-react";
 import { useAdminData } from "@/components/AdminDataContext";
 import {
@@ -12,7 +12,7 @@ import {
 
 export function SectionCards() {
   const { users, attendance } = useAdminData();
-
+const t = useTranslations("admin");
   // استبعاد الإدمن
   const nonAdminUsers = users.filter((user) => user.role !== "admin");
   const totalUsers = nonAdminUsers.length;
@@ -60,12 +60,12 @@ export function SectionCards() {
       {/* إجمالي المستخدمين */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>إجمالي الموظفين</CardDescription>
+          <CardDescription>{t("total_users")}</CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums">
             {totalUsers}
           </CardTitle>
         </CardHeader>
-        {/* <CardFooter className="text-sm text-muted-foreground">
+        {/* <CardFooter className="text-sm text-muted-foreground">  
           
         </CardFooter> */}
       </Card>
@@ -73,7 +73,7 @@ export function SectionCards() {
       {/* نسبة الحضور الشهرية */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>نسبة الحضور هذا الشهر</CardDescription>
+          <CardDescription>{t("total_attendance_month")}</CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums">
             {attendanceRate.toFixed(1)}%
           </CardTitle>
@@ -81,11 +81,11 @@ export function SectionCards() {
         <CardFooter className="flex gap-2 text-sm">
           {attendanceRate >= 75 ? (
             <>
-              أداء ممتاز <TrendingUpIcon className="size-4 text-green-500" />
+              {t("excellent_performance")}<TrendingUpIcon className="size-4 text-green-500" />
             </>
           ) : (
             <>
-              يحتاج تحسين{" "}
+              {t("needs_improvement")}{" "}
               <TrendingDownIcon className="size-4 text-yellow-500" />
             </>
           )}
@@ -95,7 +95,7 @@ export function SectionCards() {
       {/* نسبة الغياب الشهرية */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>نسبة الغياب هذا الشهر</CardDescription>
+          <CardDescription>{t("total_absence_month")}</CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums">
             {absenceRate.toFixed(1)}%
           </CardTitle>
@@ -103,11 +103,11 @@ export function SectionCards() {
         <CardFooter className="flex gap-2 text-sm">
           {absenceRate >= 50 ? (
             <>
-              مرتفعة <TrendingDownIcon className="size-4 text-red-500" />
+              {t("high_absence")} <TrendingDownIcon className="size-4 text-red-500" />
             </>
           ) : (
             <>
-              ضمن المقبول <TrendingUpIcon className="size-4 text-green-500" />
+              {t("acceptable_absence")}<TrendingUpIcon className="size-4 text-green-500" />
             </>
           )}
         </CardFooter>

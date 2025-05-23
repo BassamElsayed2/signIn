@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/app/login/actions";
+import { login } from "@/app/[locale]/login/actions";
 import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm({ className, ...props }) {

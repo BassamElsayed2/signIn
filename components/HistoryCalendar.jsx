@@ -2,19 +2,19 @@
 
 import { useEffect, useState } from "react";
 
-const timeOptions = [
-  { label: "أسبوع", value: 7 },
-  { label: "شهر", value: 30 },
-  { label: "آخر 3 شهور", value: 90 },
-];
-
-export default function HistoryCalendar({ userId }) {
+export default function HistoryCalendar({ userId, translation }) {
   const [attendance, setAttendance] = useState([]);
   const [duration, setDuration] = useState(30);
   const [loading, setLoading] = useState(true);
   const [dateList, setDateList] = useState([]);
   const [selectedDate, setSelectedDate] = useState(null);
   const [outOfDuration, setOutOfDuration] = useState(0); // هنا حالة الوقت الخارج من النطاق
+
+  const timeOptions = [
+    { label: translation.week, value: 7 },
+    { label: translation.month, value: 30 },
+    { label: translation.threeMonths, value: 90 },
+  ];
 
   useEffect(() => {
     // قراءة الوقت الخارج من النطاق من localStorage عند تحميل المكون
@@ -130,29 +130,29 @@ export default function HistoryCalendar({ userId }) {
       </div>
 
       {loading ? (
-        <p className="text-center">جاري التحميل...</p>
+        <p className="text-center">{translation.loading}</p>
       ) : (
         <>
           {/* الإحصائيات */}
           <div className="flex justify-around bg-gray-50 p-4 rounded-xl shadow-inner text-gray-800 font-semibold text-center rtl">
             <div className="flex flex-col items-center">
               <span className="text-green-600 text-xl">✅</span>
-              <span>عدد أيام الحضور</span>
+              <span>{translation.presentDays}</span>
               <span className="text-lg">{attendanceDays}</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-red-600 text-xl">❌</span>
-              <span>عدد أيام الغياب</span>
+              <span>{translation.absentDays}</span>
               <span className="text-lg">{absenceDays}</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-blue-600 text-xl">📈</span>
-              <span>نسبة الحضور</span>
-              <span className="text-lg">{attendanceRate}%</span>
+              <span>{translation.attendanceRate}</span>
+              <span className="text-lg">{translation.attendanceRate}%</span>
             </div>
             <div className="flex flex-col items-center">
               <span className="text-purple-600 text-xl">⏳</span>
-              <span>إجمالي ساعات العمل بعد الخصم</span>
+              <span>{translation.workHoursAfterDeduction}</span>{" "}
               <span className="text-lg">
                 {formatTotalDuration(adjustedWorkSeconds)}
               </span>
@@ -162,13 +162,13 @@ export default function HistoryCalendar({ userId }) {
           {/* التقويم */}
           <div className="grid grid-cols-7 mt-6 rtl gap-2 select-none">
             {[
-              "السبت",
-              "الأحد",
-              "الاثنين",
-              "الثلاثاء",
-              "الأربعاء",
-              "الخميس",
-              "الجمعة",
+              translation.saturday,
+              translation.sunday,
+              translation.monday,
+              translation.tuesday,
+              translation.wednesday,
+              translation.thursday,
+              translation.friday,
             ].map((day) => (
               <div
                 key={day}
@@ -214,11 +214,11 @@ export default function HistoryCalendar({ userId }) {
           <div className="flex justify-center gap-8 mt-4 text-sm rtl">
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded-full bg-green-600 shadow"></span>{" "}
-              حضور
+       {translation.present}
             </div>
             <div className="flex items-center gap-2">
               <span className="w-4 h-4 rounded-full bg-red-500 shadow"></span>{" "}
-              غياب
+              {translation.absent}
             </div>
           </div>
 
@@ -227,21 +227,21 @@ export default function HistoryCalendar({ userId }) {
             <div className="text-center mt-6 bg-gray-50 p-4 rounded-xl">
               <h3 className="text-lg font-bold mb-2">
                 {selectedDate} —{" "}
-                {attendanceMap.has(selectedDate) ? " ✅ حضور" : " ❌ غياب"}
+                {attendanceMap.has(selectedDate) ? translation.titlePresent : translation.titleAbsent}
               </h3>
 
               {attendanceMap.has(selectedDate) && (
                 <>
                   <p>
-                    🕒 وقت الدخول:{" "}
+                   {translation.checkIn}: {" "}
                     {formatTime(attendanceMap.get(selectedDate).timestamp)}
                   </p>
                   <p>
-                    🚪 وقت الخروج:{" "}
+                    🚪 {translation.checkOut}:{" "}
                     {formatTime(attendanceMap.get(selectedDate).logout_time)}
                   </p>
                   <p>
-                    ⏳ المدة:{" "}
+                    {translation.duration}:{" "}
                     {calculateDuration(
                       attendanceMap.get(selectedDate).timestamp,
                       attendanceMap.get(selectedDate).logout_time
@@ -254,7 +254,7 @@ export default function HistoryCalendar({ userId }) {
                 onClick={() => setSelectedDate(null)}
                 className="mt-4 text-sm text-gray-500 underline"
               >
-                إغلاق
+              {translation.close}
               </button>
             </div>
           )}
