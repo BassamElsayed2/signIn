@@ -3,9 +3,11 @@
 import { logoutAction } from "@/app/actions/checkout";
 import { useTransition } from "react";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 export default function LogoutButton({ attendanceId, isTimeOver }) {
   const [isPending, startTransition] = useTransition();
+  const t = useTranslations("Checkin");
 
   const handleLogout = () => {
     if (isTimeOver) {
@@ -14,31 +16,29 @@ export default function LogoutButton({ attendanceId, isTimeOver }) {
     } else {
       // الوقت لم ينتهِ: تأكيد يدوي
       toast(
-        (t) => (
+        (tToast) => (
           <div className="flex flex-col gap-2">
-            <p>هل تريد الخروج قبل الموعد المحدد؟</p>
+            <p>{t("confirmEarlyLogout")}</p>
             <div className="flex gap-2 justify-end">
               <button
                 className="px-3 py-1 bg-gray-200 rounded"
-                onClick={() => toast.dismiss(t)}
+                onClick={() => toast.dismiss(tToast)}
               >
-                إلغاء
+                {t("cancel")}
               </button>
               <button
                 className="px-3 py-1 bg-red-600 text-white rounded"
                 onClick={() => {
-                  toast.dismiss(t);
+                  toast.dismiss(tToast);
                   startTransition(() => logoutAction(attendanceId));
                 }}
               >
-                نعم، خروج
+                {t("confirm")}
               </button>
             </div>
           </div>
         ),
-        {
-          duration: 10000,
-        }
+        { duration: 10000 }
       );
     }
   };
@@ -49,7 +49,7 @@ export default function LogoutButton({ attendanceId, isTimeOver }) {
       disabled={isPending}
       className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded mt-6 transition"
     >
-      {isPending ? "جارٍ تسجيل الخروج..." : "🚪  أنهاء اليوم"}
+      {isPending ? t("loggingOut") : `🚪  ${t("endDay")}`}
     </button>
   );
 }

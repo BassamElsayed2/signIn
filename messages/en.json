@@ -1,0 +1,86 @@
+{
+  "Home": {
+    "welcome": "Welcome, {name} 👋",
+    "readyToCheckIn": "Ready to check in today?",
+    "checkin": "Check-in"
+  },
+  "Checkin": {
+    "time1": "Time",
+    "loading": "Loading...",
+    "noRecords": "No records for today",
+    "checkinDetails": "Check-in Details",
+    "name": "Name",
+    "time": "Check-in Time",
+    "address": "Address",
+    "coordinates": "Coordinates",
+    "mapTitle": "Location Map",
+    "viewAttendanceLog": "View Attendance Log",
+     "checkin": "Check In",
+  "checkingIn": "Checking in...",
+  "error": "An error occurred",
+  "locationError": "Failed to get location",
+ "outOfRange": "You are currently out of range. Timer paused.",
+  "timeLeft": "Time left: {hours}h {minutes}m {seconds}s",
+   "confirmEarlyLogout": "Do you want to leave before the scheduled time?",
+  "cancel": "Cancel",
+  "confirm": "Yes, logout",
+  "loggingOut": "Logging out...",
+  "endDay": "End Day"
+  },
+  "Calendar": {
+    "attendanceCalendar": "Attendance Calendar",
+    "loading": "Loading...",
+    "noRecords": "No attendance records found.",
+    "present": "Present",
+    "absent": "Absent",
+    "selectDuration": "Select Duration",
+    "lastWeek": "Last Week",
+    "lastMonth": "Last Month",
+    "last3Months": "Last 3 Months",
+    "attendanceRate": "Attendance Rate",
+    "details": "Details",
+    "today": "Today",
+    "viewAttendanceLog": "View Attendance Log",
+    "back": "Back"
+
+  }, 
+  "History": {
+    "week": "Week",
+    "month": "Month",
+    "last3Months": "Last 3 Months",
+    "loading": "Loading...",
+    "daysPresent": "Days Present",
+    "daysAbsent": "Days Absent",
+    "attendanceRate": "Attendance Rate",
+    "totalWorkHours": "Total Work Hours After Deduction",
+    "hours": "h",
+    "minutes": "m",
+"daySat": "Sat",
+    "daySun": "Sun",
+    "dayMon": "Mon",
+    "dayTue": "Tue",
+    "dayWed": "Wed",
+    "dayThu": "Thu",
+    "dayFri": "Fri",
+        "present": "Present",
+    "absent": "Absent",
+    "entryTime": "Entry Time",
+    "exitTime": "Exit Time",
+    "duration": "Duration",
+    "close": "Close"
+}
+
+,
+  "Login": {
+    "title": "Welcome",
+    "email": "Email",
+    "password": "Password",
+    "submit": "Login",
+    "loading": "Logging in...",
+    "error": {
+      "invalid": "Invalid email or password",
+      "unknown": "An unexpected error occurred"
+    }
+  },
+   "logout": "Sign Out"
+}

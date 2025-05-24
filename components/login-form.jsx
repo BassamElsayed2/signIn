@@ -6,10 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/app/login/actions";
+import { login } from "@/app/[locale]/login/actions";
 import { Eye, EyeOff } from "lucide-react";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { LanguageSwitcher } from "./LanguageSwitcher";
 
 export function LoginForm({ className, ...props }) {
+  const t = useTranslations("Login");
+const locale = useLocale();
+
   const [state, formAction] = useActionState(login, { error: null });
   const [showPassword, setShowPassword] = useState(false);
   const [isPending, startTransition] = useTransition();
@@ -25,13 +31,20 @@ export function LoginForm({ className, ...props }) {
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" action={handleSubmit}>
+            
+            <input type="hidden" name="locale" value={locale} />
+            
             <div className="flex flex-col gap-6">
-              <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">مرحبا</h1>
+
+              <div className="flex justify-between items-center text-center mb-6">
+        <h1 className="text-2xl font-bold flex-1">{t("title")}</h1>
+        <div className="ml-4">
+          <LanguageSwitcher />
+          </div>
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email">الايميل</Label>
+                <Label htmlFor="email">{t("email")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -42,7 +55,7 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password">كلمة المرور</Label>
+                <Label htmlFor="password">{t("password")}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -63,18 +76,23 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               {state?.error && (
-                <div className="text-sm text-red-500">{state.error}</div>
+                <div className="text-sm text-red-500">
+                  {t(`error.${state.error}`)}
+                </div>
               )}
 
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "جاري الدخول..." : "تسجيل الدخول"}
+                {isPending ? t("loading") : t("submit")}
               </Button>
+              
             </div>
           </form>
+
           <div className="relative hidden bg-muted md:block">
+            
             <img
               src="/calender.jpg"
-              alt="Image"
+              alt="Calendar image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
             />
           </div>

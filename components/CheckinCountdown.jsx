@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { differenceInSeconds, addHours } from "date-fns";
+import { useTranslations } from "next-intl";
 
 export default function CheckinCountdown({
   role,
@@ -14,6 +15,7 @@ export default function CheckinCountdown({
   const [outDuration, setOutDuration] = useState(0);
   const intervalRef = useRef(null);
   const outIntervalRef = useRef(null);
+  const t = useTranslations("Checkin");
 
   const workingHours = {
     developer: 5,
@@ -28,7 +30,6 @@ export default function CheckinCountdown({
 
   const deadline = getDeadline();
 
-  // نقرأ outDuration من localStorage عند تحميل المكون لأول مرة
   useEffect(() => {
     const savedOutDuration = localStorage.getItem("outDuration");
     if (savedOutDuration) {
@@ -37,11 +38,10 @@ export default function CheckinCountdown({
   }, []);
 
   useEffect(() => {
-    // تتبع الموقع
     const watchId = navigator.geolocation.watchPosition(
       (pos) => {
         const { latitude, longitude } = pos.coords;
-        const maxDistance = 100; // بالمتر
+        const maxDistance = 100;
 
         const distance = getDistanceFromLatLonInMeters(
           latitude,
@@ -62,19 +62,15 @@ export default function CheckinCountdown({
   useEffect(() => {
     const updateTimer = () => {
       const now = new Date();
-      // نضيف مدة الخروج على الوقت النهائي
-      const adjustedDeadline = new Date(
-        deadline.getTime() + outDuration * 1000
-      );
+      const adjustedDeadline = new Date(deadline.getTime() + outDuration * 1000);
       const secondsLeft = differenceInSeconds(adjustedDeadline, now);
       setTimeLeft(Math.max(0, secondsLeft));
     };
 
     if (!isOutOfRange || forceAllowTimer) {
-      updateTimer(); // أول مرة
+      updateTimer();
       intervalRef.current = setInterval(updateTimer, 1000);
 
-      // لما يرجع جوة النطاق ننظف outDuration من localStorage ومن الحالة
       if (outIntervalRef.current) {
         clearInterval(outIntervalRef.current);
         outIntervalRef.current = null;
@@ -82,7 +78,6 @@ export default function CheckinCountdown({
       setOutDuration(0);
       localStorage.removeItem("outDuration");
     } else {
-      // لو خارج النطاق، نوقف عداد الوقت العادي وندخل في عداد لحساب مدة الخروج
       if (intervalRef.current) {
         clearInterval(intervalRef.current);
         intervalRef.current = null;
@@ -106,7 +101,7 @@ export default function CheckinCountdown({
   }, [deadline, isOutOfRange, forceAllowTimer]);
 
   function getDistanceFromLatLonInMeters(lat1, lon1, lat2, lon2) {
-    const R = 6371e3; // نصف قطر الأرض بالمتر
+    const R = 6371e3;
     const φ1 = (lat1 * Math.PI) / 180;
     const φ2 = (lat2 * Math.PI) / 180;
     const Δφ = ((lat2 - lat1) * Math.PI) / 180;
@@ -128,11 +123,11 @@ export default function CheckinCountdown({
     <div className="mt-6 text-center">
       {isOutOfRange && !forceAllowTimer ? (
         <p className="text-red-600 text-lg font-semibold">
-          ⚠️ أنت الآن خارج نطاق الموقع، تم إيقاف العداد مؤقتًا.
+          ⚠️ {t("outOfRange")}
         </p>
       ) : (
         <p className="text-2xl font-bold text-gray-900">
-          ⏳ الوقت المتبقي: {hours}س {minutes}د {seconds}ث
+          ⏳ {t("timeLeft", { hours, minutes, seconds })}
         </p>
       )}
     </div>

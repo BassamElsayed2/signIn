@@ -3,34 +3,36 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { checkInUser } from "@/app/actions/checkin";
+import { useTranslations } from "next-intl";
 
 export default function CheckInClient() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const t = useTranslations("Checkin");
 
   const handleCheckIn = () => {
     setLoading(true);
 
-    const time = new Date().toISOString(); // ✅ وقت الضغط على الزر
+    const time = new Date().toISOString();
 
     navigator.geolocation.getCurrentPosition(
       async (pos) => {
         const res = await checkInUser(
           pos.coords.latitude,
           pos.coords.longitude,
-          time // ✅ تمريره للسيرفر
+          time
         );
 
         if (res.success) {
-          router.push("/user/checkin"); // ✅ صفحة عرض التفاصيل
+          router.push("/user/checkin");
         } else {
-          alert(res.error || "حدث خطأ");
+          alert(t("error") || "حدث خطأ");
         }
 
         setLoading(false);
       },
       () => {
-        alert("فشل في الحصول على الموقع");
+        alert(t("locationError"));
         setLoading(false);
       }
     );
@@ -42,7 +44,7 @@ export default function CheckInClient() {
       disabled={loading}
       className="w-full bg-black text-white py-3 px-6 rounded-xl shadow-md hover:bg-gray-800 hover:shadow-lg active:scale-95 transition duration-200 ease-in-out disabled:opacity-50"
     >
-      {loading ? "جاري التسجيل..." : "تسجيل الحضور"}
+      {loading ? t("checkingIn") : t("checkin")}
     </button>
   );
 }
