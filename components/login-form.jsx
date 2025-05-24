@@ -6,8 +6,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { login } from "@/app/login/actions";
+import { login } from "@/app/[locale]/login/actions";
 import { Eye, EyeOff } from "lucide-react";
+import {useTranslations} from 'next-intl';
 
 export function LoginForm({ className, ...props }) {
   const [state, formAction] = useActionState(login, { error: null });
@@ -20,6 +21,8 @@ export function LoginForm({ className, ...props }) {
     });
   };
 
+  const t = useTranslations("login");
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
@@ -27,7 +30,7 @@ export function LoginForm({ className, ...props }) {
           <form className="p-6 md:p-8" action={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">مرحبا</h1>
+                <h1 className="text-2xl font-bold">{t("title")}</h1>
               </div>
 
               <div className="grid gap-2">

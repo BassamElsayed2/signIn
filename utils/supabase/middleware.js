@@ -35,9 +35,18 @@ export async function updateSession(request) {
   if (error || !user) {
     const pathname = request.nextUrl.pathname;
 
-    if (!pathname.startsWith("/login") && !pathname.startsWith("/auth")) {
+    // اسمح بالمرور إذا كان في صفحة تسجيل الدخول أو صفحات auth (بما في ذلك مع locale)
+    const allowedPaths = ["/login", "/auth"];
+    const isOnAllowedPath = allowedPaths.some(
+      (path) =>
+        pathname === path ||
+        pathname.startsWith(`/ar${path}`) ||
+        pathname.startsWith(`/en${path}`)
+    );
+
+    if (!isOnAllowedPath) {
       const url = request.nextUrl.clone();
-      url.pathname = "/login";
+      url.pathname = "/login"; // أو استعمل locale هنا لو عندك
       return NextResponse.redirect(url);
     }
 
