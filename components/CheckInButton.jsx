@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { checkInUser } from "@/app/actions/checkin";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function CheckInClient() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const locale = useLocale()
   const t = useTranslations("Checkin");
 
   const handleCheckIn = () => {
@@ -24,7 +25,7 @@ export default function CheckInClient() {
         );
 
         if (res.success) {
-          router.push("/user/checkin");
+          router.push(`${locale}/user/checkin`);
         } else {
           alert(t("error") || "حدث خطأ");
         }

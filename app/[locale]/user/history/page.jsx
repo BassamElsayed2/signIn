@@ -35,7 +35,7 @@ export default function HistoryPage() {
           >
             <h2 className="text-2xl font-bold">📅 {t("attendanceCalendar")}</h2>
             <button
-              onClick={() => router.push("/user/checkin")}
+              onClick={() => router.push(`${locale}/user/checkin`)}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300 transition text-sm"
             >
               🔙 {t("back")}

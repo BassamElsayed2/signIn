@@ -11,7 +11,7 @@ export default function SignOutButton() {
 
   const handleSignOut = async () => {
     await supabase.auth.signOut();
-    router.push("/login"); // بعد تسجيل الخروج، يرجع لصفحة تسجيل الدخول
+    router.push(`${locale}/login`); // بعد تسجيل الخروج، يرجع لصفحة تسجيل الدخول
   };
 
   return (

@@ -62,7 +62,7 @@ export default function UserListTable() {
 
   const handleShowDetails = useCallback(
     (user) => {
-      router.push(`/admin/user/${user.id}`);
+      router.push(`${locale}/admin/user/${user.id}`);
     },
     [router]
   );

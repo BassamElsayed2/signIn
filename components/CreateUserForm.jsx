@@ -30,7 +30,7 @@ export default function CreateUserForm({ setOpen }) {
 
     if (result.success) {
       toast.success("تم إنشاء المستخدم بنجاح");
-      router.push("/admin");
+     router.push(`${locale}/admin`);
     } else {
       setError(result.error);
       toast.error("فشل في إنشاء المستخدم: " + result.error);
