@@ -11,8 +11,10 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import Link from "next/link";
+import { useLocale } from "next-intl";
 
 export function NavMain({ items }) {
+  const locale = useLocale();
   return (
     <SidebarGroup>
       <SidebarGroupContent className="flex flex-col gap-2">
@@ -37,14 +39,14 @@ export function NavMain({ items }) {
         </SidebarMenu>
         <SidebarMenu>
           {items.map((item) => (
-            <SidebarMenuItem key={item.title}>
-              <Link href={item.url}>
+            <SidebarMenuItem key={item.title_en}>
+              <Link href={locale === "ar" ? item.url_ar : item.url_en}>
                 <SidebarMenuButton
-                  tooltip={item.title}
+                  tooltip={locale === "ar" ? item.title_ar : item.title_en}
                   className="!cursor-pointer"
                 >
                   {item.icon && <item.icon />}
-                  <span>{item.title}</span>
+                  <span>{locale === "ar" ? item.title_ar : item.title_en}</span>
                 </SidebarMenuButton>
               </Link>
             </SidebarMenuItem>

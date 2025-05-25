@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
+import SignOutButton from "./SignOut";
+import LanguageToggle from "./LanguageToggle";
 
 export default function NavBar() {
-  const pathname = usePathname();
   const [user, setUser] = useState(null);
 
   // هنا ممكن تجيب بيانات المستخدم من localStorage أو context أو من supabase client (لو في client side)
@@ -26,13 +27,9 @@ export default function NavBar() {
           <span className="font-semibold text-lg text-gray-900">ENS.</span>
         </Link>
 
-        <div>
-          <Link
-            href="/login"
-            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition"
-          >
-            تسجيل الخروج
-          </Link>
+        <div className="flex items-center space-x-4">
+          <SignOutButton />
+          <LanguageToggle />
         </div>
       </div>
     </nav>

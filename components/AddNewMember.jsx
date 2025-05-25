@@ -11,17 +11,24 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import CreateUserForm from "./CreateUserForm";
+import { useLocale } from "next-intl";
 
 export default function AddNewMember() {
   const [open, setOpen] = useState(false);
 
+  const locale = useLocale();
+
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>اضف موظف جديد +</Button>
+      <Button onClick={() => setOpen(true)}>
+        {locale == "en" ? "Add a new employee +" : "اضف موظف جديد +"}
+      </Button>
       <Dialog open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>أضف موظف جديد</DialogTitle>
+            <DialogTitle>
+              {locale == "en" ? "Add a new employee" : "أضف موظف جديد"}
+            </DialogTitle>
 
             <CreateUserForm setOpen={setOpen} />
           </DialogHeader>

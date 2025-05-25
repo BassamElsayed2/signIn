@@ -14,11 +14,15 @@ import {
 } from "./ui/select";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
+import { useLocale, useTranslations } from "next-intl";
 
 export default function CreateUserForm({ setOpen }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const router = useRouter();
+
+  const locale = useLocale();
+  const t = useTranslations("createUser");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -29,11 +33,19 @@ export default function CreateUserForm({ setOpen }) {
     const result = await createUser(formData);
 
     if (result.success) {
-      toast.success("تم إنشاء المستخدم بنجاح");
+      toast.success(
+        locale === "en"
+          ? "User created successfully"
+          : "تم إنشاء المستخدم بنجاح"
+      );
       router.push("/admin");
     } else {
       setError(result.error);
-      toast.error("فشل في إنشاء المستخدم: " + result.error);
+      toast.error(
+        locale === "en"
+          ? `Failed to create user: ${result.error}`
+          : `فشل في إنشاء المستخدم: ${result.error}`
+      );
     }
 
     setLoading(false);
@@ -43,35 +55,37 @@ export default function CreateUserForm({ setOpen }) {
     <form onSubmit={handleSubmit} className="max-w-md space-y-4">
       <div>
         <Label htmlFor="full_name" className="mb-2">
-          الاسم الكامل
+          {t("fullName")}
         </Label>
         <Input name="full_name" required />
       </div>
       <div>
         <Label htmlFor="email" className="mb-2">
-          البريد الإلكتروني
+          {t("email")}
         </Label>
         <Input name="email" type="email" required />
       </div>
       <div>
         <Label htmlFor="password" className="mb-2">
-          كلمة المرور
+          {t("password")}
         </Label>
         <Input name="password" type="password" required />
       </div>
       <div>
         <Label htmlFor="role" className="mb-2">
-          الدور
+          {t("role")}
         </Label>
         <Select name="role" required>
           <SelectTrigger>
-            <SelectValue placeholder="اختر الدور" />
+            <SelectValue
+              placeholder={locale == "en" ? "Chose role" : "اختر الدور"}
+            />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="admin">Admin</SelectItem>
-            <SelectItem value="developer">Developer</SelectItem>
-            <SelectItem value="it">It</SelectItem>
-            <SelectItem value="other">Other</SelectItem>
+            <SelectItem value="admin">{t("roles.admin")}</SelectItem>
+            <SelectItem value="developer">{t("roles.developer")}</SelectItem>
+            <SelectItem value="it">{t("roles.it")}</SelectItem>
+            <SelectItem value="other">{t("roles.other")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -85,10 +99,10 @@ export default function CreateUserForm({ setOpen }) {
           disabled={loading}
           variant="ghost"
         >
-          {"خروج"}
+          {t("cancel")}
         </Button>
         <Button type="submit" disabled={loading}>
-          {loading ? "جاري التسجيل..." : "تسجيل مستخدم"}
+          {loading ? t("loading") : t("submit")}
         </Button>
       </div>
     </form>

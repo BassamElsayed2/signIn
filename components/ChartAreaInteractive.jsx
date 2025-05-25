@@ -27,13 +27,16 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useLocale } from "next-intl";
 
 export default function AttendanceBarChart() {
   const { users, attendance } = useAdminData();
   const [range, setRange] = useState("week");
-const isMobile = useIsMobile();
+  const isMobile = useIsMobile();
   const nonAdminUsers = users.filter((user) => user.role !== "admin");
   const totalUsers = nonAdminUsers.length;
+
+  const locale = useLocale();
 
   const getDatesBetween = (start, end) => {
     const dates = [];
@@ -94,8 +97,12 @@ const isMobile = useIsMobile();
 
       data.push({
         name: formatDate(date),
-        الحضور: Number(attendanceRate.toFixed(1)),
-        الغياب: Number(absenceRate.toFixed(1)),
+        [locale === "en" ? "attendence" : "الحضور"]: Number(
+          attendanceRate.toFixed(1)
+        ),
+        [locale === "en" ? "absence" : "الغياب"]: Number(
+          absenceRate.toFixed(1)
+        ),
       });
     }
 
@@ -106,33 +113,57 @@ const isMobile = useIsMobile();
 
   return (
     <div className="mx-auto p-0">
-      <Card >
+      <Card>
         <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>تغير نسب الحضور والغياب</CardTitle>
+            <CardTitle>
+              {locale == "en"
+                ? "Change in attendance and absence rates"
+                : "تغير نسب الحضور والغياب"}
+            </CardTitle>
           </div>
           <Select value={range} onValueChange={setRange}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="اختر المدى الزمني" />
+              <SelectValue
+                placeholder={
+                  locale === "en" ? "Select time range" : "اختر المدى الزمني"
+                }
+              />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="week">آخر أسبوع</SelectItem>
-              <SelectItem value="month">آخر شهر</SelectItem>
-              <SelectItem value="3months">آخر 3 شهور</SelectItem>
+              <SelectItem value="week">
+                {locale === "en" ? "Last Week" : "آخر أسبوع"}
+              </SelectItem>
+              <SelectItem value="month">
+                {locale === "en" ? "Last Month" : "آخر شهر"}
+              </SelectItem>
+              <SelectItem value="3months">
+                {locale === "en" ? "Last 3 Months" : "آخر 3 شهور"}
+              </SelectItem>
             </SelectContent>
           </Select>
         </CardHeader>
 
         <CardContent className="h-[360px] mr-4 p-0 flex items-center justify-center">
-          <ResponsiveContainer width="100%" height="100%" >
+          <ResponsiveContainer width="100%" height="100%">
             <BarChart data={chartData}>
               <CartesianGrid strokeDasharray="3 3" />
-             {!isMobile && <XAxis dataKey="name" /> } 
-             {!isMobile &&  <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />}
+              {!isMobile && <XAxis dataKey="name" />}
+              {!isMobile && (
+                <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />
+              )}
               <Tooltip formatter={(value) => `${value}%`} />
               <Legend />
-              <Bar dataKey="الحضور" fill="#000" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="الغياب" fill="#6c757d" radius={[4, 4, 0, 0]} />
+              <Bar
+                dataKey={locale === "en" ? "attendence" : "الحضور"}
+                fill="#000"
+                radius={[4, 4, 0, 0]}
+              />
+              <Bar
+                dataKey={locale === "en" ? "absence" : "الغياب"}
+                fill="#6c757d"
+                radius={[4, 4, 0, 0]}
+              />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

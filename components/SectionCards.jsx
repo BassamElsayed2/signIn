@@ -9,9 +9,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { useLocale } from "next-intl";
+import { useTranslations } from "use-intl";
 
 export function SectionCards() {
   const { users, attendance } = useAdminData();
+
+  const t = useTranslations("Cards");
 
   // استبعاد الإدمن
   const nonAdminUsers = users.filter((user) => user.role !== "admin");
@@ -60,7 +64,7 @@ export function SectionCards() {
       {/* إجمالي المستخدمين */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>إجمالي الموظفين</CardDescription>
+          <CardDescription>{t("total")} </CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums">
             {totalUsers}
           </CardTitle>
@@ -73,7 +77,7 @@ export function SectionCards() {
       {/* نسبة الحضور الشهرية */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>نسبة الحضور هذا الشهر</CardDescription>
+          <CardDescription>{t("attendanceRate")}</CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums">
             {attendanceRate.toFixed(1)}%
           </CardTitle>
@@ -81,11 +85,12 @@ export function SectionCards() {
         <CardFooter className="flex gap-2 text-sm">
           {attendanceRate >= 75 ? (
             <>
-              أداء ممتاز <TrendingUpIcon className="size-4 text-green-500" />
+              {t("excellent")}
+              <TrendingUpIcon className="size-4 text-green-500" />
             </>
           ) : (
             <>
-              يحتاج تحسين{" "}
+              {t("notGood")}
               <TrendingDownIcon className="size-4 text-yellow-500" />
             </>
           )}
@@ -95,7 +100,7 @@ export function SectionCards() {
       {/* نسبة الغياب الشهرية */}
       <Card className="@container/card">
         <CardHeader>
-          <CardDescription>نسبة الغياب هذا الشهر</CardDescription>
+          <CardDescription>{t("absenceRate")}</CardDescription>
           <CardTitle className="text-3xl font-semibold tabular-nums">
             {absenceRate.toFixed(1)}%
           </CardTitle>
@@ -103,11 +108,12 @@ export function SectionCards() {
         <CardFooter className="flex gap-2 text-sm">
           {absenceRate >= 50 ? (
             <>
-              مرتفعة <TrendingDownIcon className="size-4 text-red-500" />
+              {t("high")} <TrendingDownIcon className="size-4 text-red-500" />
             </>
           ) : (
             <>
-              ضمن المقبول <TrendingUpIcon className="size-4 text-green-500" />
+              {t("acceptable")}
+              <TrendingUpIcon className="size-4 text-green-500" />
             </>
           )}
         </CardFooter>

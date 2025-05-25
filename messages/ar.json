@@ -3,5 +3,81 @@
     "title": "مرحبا",
     "email": "ايميل",
     "password": "كلمة المرور"
+  },
+
+  "Cards": {
+    "total": "إجمالي الموظفين",
+    "attendanceRate": "نسبة الحضور هذا الشهر",
+    "excellent": "أداء ممتاز",
+    "notGood": "يحتاج تحسين",
+    "absenceRate": "نسبة الغياب هذا الشهر",
+    "high": "مرتفعه",
+    "acceptable": "ضمن المقبول"
+  },
+
+  "createUser": {
+    "fullName": "الاسم الكامل",
+    "email": "البريد الإلكتروني",
+    "password": "كلمة المرور",
+    "role": "الدور",
+    "selectRole": "اختر الدور",
+    "roles": {
+      "admin": "أدمن",
+      "developer": "مبرمج",
+      "it": "تقني",
+      "other": "آخر"
+    },
+    "cancel": "خروج",
+    "submit": "تسجيل مستخدم",
+    "loading": "جاري التسجيل..."
+  },
+
+  "userListTable": {
+    "searchPlaceholder": "ابحث عن مستخدم",
+    "viewDetails": "عرض التفاصيل",
+    "deleteUser": "حذف المستخدم",
+    "deleteSuccess": "تم حذف المستخدم بنجاح",
+    "deleteError": "حدث خطأ أثناء الحذف",
+    "confirmDelete": "تأكيد الحذف",
+    "confirmDeleteMessage": "هل أنت متأكد أنك تريد حذف المستخدم: {name}؟",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "columns": {
+      "number": "#",
+      "name": "الاسم",
+      "role": "الدور",
+      "status": "الحالة",
+      "actions": "الإجراءات"
+    },
+    "status": {
+      "loggedOut": "انصرف",
+      "present": "حضر",
+      "notYet": "لم يحضر بعد"
+    }
+  },
+  "calender": {
+    "week": "أسبوع",
+    "month": "شهر",
+    "last3months": "آخر 3 شهور",
+    "loading": "جاري التحميل...",
+    "attendanceDays": " الحضور",
+    "absenceDays": " الغياب",
+    "attendanceRate": "نسبة ",
+    "totalWorkHours": " ساعات العمل  ",
+    "saturday": "السبت",
+    "sunday": "الأحد",
+    "monday": "الاثنين",
+    "tuesday": "الثلاثاء",
+    "wednesday": "الأربعاء",
+    "thursday": "الخميس",
+    "friday": "الجمعة",
+    "present": "حضور",
+    "absent": "غياب",
+    "checkIn": "وقت الدخول",
+    "checkOut": "وقت الخروج",
+    "duration": "المدة",
+    "close": "إغلاق",
+    "h": "ساعة",
+    "m": "دقيقة"
   }
 }

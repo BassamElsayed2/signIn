@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useRef } from "react";
 import { differenceInSeconds, addHours } from "date-fns";
+import { useLocale } from "next-intl";
 
 export default function CheckinCountdown({
   role,
@@ -14,6 +15,8 @@ export default function CheckinCountdown({
   const [outDuration, setOutDuration] = useState(0);
   const intervalRef = useRef(null);
   const outIntervalRef = useRef(null);
+
+  const locale = useLocale();
 
   const workingHours = {
     developer: 5,
@@ -128,11 +131,15 @@ export default function CheckinCountdown({
     <div className="mt-6 text-center">
       {isOutOfRange && !forceAllowTimer ? (
         <p className="text-red-600 text-lg font-semibold">
-          ⚠️ أنت الآن خارج نطاق الموقع، تم إيقاف العداد مؤقتًا.
+          {locale == "en"
+            ? "⚠️ You are now out of range, the counter has been paused."
+            : "⚠️ أنت الآن خارج نطاق الموقع، تم إيقاف العداد مؤقتًا."}
         </p>
       ) : (
         <p className="text-2xl font-bold text-gray-900">
-          ⏳ الوقت المتبقي: {hours}س {minutes}د {seconds}ث
+          {locale == "en"
+            ? `⏳ Time remaining: ${hours}h ${minutes}m ${seconds}s`
+            : ` ⏳ الوقت المتبقي: ${hours}س ${minutes}د ${seconds}ث`}
         </p>
       )}
     </div>

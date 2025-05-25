@@ -3,10 +3,13 @@ import LogoutButton from "@/components/CheckOut";
 import NavBar from "@/components/NavBar";
 
 import { createClient } from "@/utils/supabase/server";
+import { getLocale } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
-export default async function CheckinPage() {
+export default async function CheckinPage({ params }) {
+  const locale = params.locale;
+
   const supabase = await createClient();
   const {
     data: { user },
@@ -32,7 +35,9 @@ export default async function CheckinPage() {
   if (!records || records.length === 0) {
     return (
       <div className="p-6 text-center text-gray-500">
-        <p>لا يوجد سجلات حضور.</p>
+        <p>
+          {locale == "en" ? "No attendance records." : "لا يوجد سجلات حضور."}
+        </p>
       </div>
     );
   }
@@ -53,7 +58,10 @@ export default async function CheckinPage() {
       const data = await res.json();
       fullAddress = data.display_name;
     } catch (error) {
-      console.error("حدث خطأ أثناء جلب العنوان:", error);
+      console.error(
+        locale == "en" ? "Somthing went wrong" : "حدث خطأ أثناء جلب العنوان:",
+        error
+      );
     }
   }
 
@@ -78,16 +86,22 @@ export default async function CheckinPage() {
     <div className="pt-26 p-8 max-w-xl mx-auto bg-white rounded-xl shadow-md text-center">
       <NavBar />
       <h2 className="text-3xl font-semibold text-gray-900 mb-6">
-        تفاصيل تسجيل الحضور
+        {locale == "en"
+          ? "Attendance registration details"
+          : "تفاصيل تسجيل الحضور"}
       </h2>
 
       <div className="space-y-4 text-gray-800">
         <p className="text-lg">
-          <span className="font-semibold text-gray-900">👤 الاسم:</span>{" "}
+          <span className="font-semibold text-gray-900">
+            {locale == "en" ? "👤 Name: " : "👤 الاسم:"}
+          </span>{" "}
           {profile?.full_name}
         </p>
         <p className="text-lg">
-          <span className="font-semibold text-gray-900">🕒 الوقت:</span>{" "}
+          <span className="font-semibold text-gray-900">
+            {locale == "en" ? "🕒 Time:" : "🕒 الوقت:"}
+          </span>{" "}
           {new Date(lastRecord.timestamp).toLocaleTimeString("ar-EG", {
             hour: "2-digit",
             minute: "2-digit",
@@ -96,7 +110,9 @@ export default async function CheckinPage() {
 
         {fullAddress ? (
           <p className="text-lg">
-            <span className="font-semibold text-gray-900">📍 العنوان:</span>{" "}
+            <span className="font-semibold text-gray-900">
+              {locale == "en" ? "📍 Location:" : "📍 العنوان:"}
+            </span>{" "}
             {fullAddress}
           </p>
         ) : (
@@ -139,7 +155,7 @@ export default async function CheckinPage() {
 
       <Link href="/user/history">
         <button className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 mt-6 transition">
-          📜 عرض سجل الحضور
+          {locale == "en" ? "📜 View attendance record" : "📜 عرض سجل الحضور"}
         </button>
       </Link>
     </div>

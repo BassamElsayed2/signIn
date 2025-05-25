@@ -3,9 +3,12 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createClient } from "@/utils/supabase/server";
+import { getLocale } from "next-intl/server";
 
 export async function login(prevState, formData) {
   const supabase = await createClient();
+
+  const locale = await getLocale(); // ✅ إصلاح هنا
 
   const data = {
     email: formData.get("email"),
@@ -21,7 +24,6 @@ export async function login(prevState, formData) {
 
   const userId = signInData.user.id;
 
-  // جلب دور المستخدم من جدول "profiles" (عدل الاسم حسب جدولك)
   const { data: profile, error: profileError } = await supabase
     .from("profiles")
     .select("role")
@@ -29,16 +31,14 @@ export async function login(prevState, formData) {
     .single();
 
   if (profileError || !profile) {
-    // لو حصل خطأ أو ما وجد دور، نوجه المستخدم بشكل افتراضي
-    redirect("/user");
+    redirect(`/${locale}/user`);
   }
 
-  revalidatePath("/user", "layout");
+  revalidatePath(`/${locale}/user`, "layout");
 
-  // توجه بناءً على الدور
   if (profile.role === "admin") {
-    redirect("/admin");
+    redirect(`/${locale}/admin`);
   } else {
-    redirect("/user");
+    redirect(`/${locale}/user`);
   }
 }

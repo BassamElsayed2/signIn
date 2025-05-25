@@ -21,11 +21,11 @@ import { Trash2, Eye, Search } from "lucide-react";
 
 import { deleteUserById } from "@/lib/deleteUserById";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 export default function UserListTable() {
-  const { users, attendance, setUsers, setAttendance, fetchAdminData } =
-    useAdminData();
-  // fetchAdminData: دالة داخل السياق تعيد تحميل البيانات (users, attendance)
+  const t = useTranslations("userListTable");
+  const { users, attendance, setUsers, fetchAdminData } = useAdminData();
 
   const today = new Date().toISOString().split("T")[0];
   const isMobile = useIsMobile();
@@ -48,15 +48,12 @@ export default function UserListTable() {
 
     try {
       await deleteUserById(selectedUser.id);
-
       setUsers((prev) => prev.filter((u) => u.id !== selectedUser.id));
-
       setIsDeleteDialogOpen(false);
       setSelectedUser(null);
-
-      alert("تم حذف المستخدم بنجاح");
+      alert(t("deleteSuccess"));
     } catch (error) {
-      alert("حدث خطأ أثناء الحذف: " + (error.message || error));
+      alert(t("deleteError") + ": " + (error.message || error));
     }
   };
 
@@ -67,15 +64,13 @@ export default function UserListTable() {
     [router]
   );
 
-  // هنا: تحديث البيانات بشكل دوري كل 30 ثانية
   useEffect(() => {
     if (!fetchAdminData) return;
 
-    fetchAdminData(); // تحميل أولي
-
+    fetchAdminData();
     const interval = setInterval(() => {
       fetchAdminData();
-    }, 30000); // 30 ثانية
+    }, 30000);
 
     return () => clearInterval(interval);
   }, [fetchAdminData]);
@@ -90,13 +85,13 @@ export default function UserListTable() {
       (entry) => entry.logout_time?.split("T")[0] === today
     );
 
-    let حالة_بصرية;
+    let statusLabel;
     if (hasLoggedOutToday) {
-      حالة_بصرية = "انصرف";
+      statusLabel = t("status.loggedOut");
     } else if (userEntriesToday.length > 0) {
-      حالة_بصرية = "حضر";
+      statusLabel = t("status.present");
     } else {
-      حالة_بصرية = "لم يحضر بعد";
+      statusLabel = t("status.notYet");
     }
 
     return {
@@ -104,7 +99,7 @@ export default function UserListTable() {
       "#": index + 1,
       الاسم: user.full_name,
       الدور: user.role,
-      حالة_بصرية,
+      حالة_بصرية: statusLabel,
       hasLoggedOutToday,
       isPresent: userEntriesToday.length > 0,
       _fullUser: user,
@@ -119,7 +114,7 @@ export default function UserListTable() {
           variant="outline"
           size="sm"
           onClick={() => handleShowDetails(user)}
-          title="عرض التفاصيل"
+          title={t("viewDetails")}
         >
           <Eye className="w-4 h-4" />
         </Button>
@@ -127,21 +122,22 @@ export default function UserListTable() {
           variant="destructive"
           size="sm"
           onClick={() => handleOpenDeleteDialog(user)}
-          title="حذف المستخدم"
+          title={t("deleteUser")}
         >
           <Trash2 className="w-4 h-4" />
         </Button>
       </div>
     );
   };
+
   const colDefs = useMemo(
     () =>
       [
-        { field: "#", width: 40 },
-        { field: "الاسم", flex: 2 },
-        !isMobile && { field: "الدور", flex: 1 },
+        { field: "#", headerName: t("columns.number"), width: 40 },
+        { field: "الاسم", headerName: t("columns.name"), flex: 2 },
+        !isMobile && { field: "الدور", headerName: t("columns.role"), flex: 1 },
         {
-          headerName: "الحالة",
+          headerName: t("columns.status"),
           field: "حالة_بصرية",
           flex: 1,
           cellRenderer: (params) => {
@@ -163,7 +159,7 @@ export default function UserListTable() {
           },
         },
         {
-          headerName: "الإجراءات",
+          headerName: t("columns.actions"),
           field: "actions",
           flex: 2,
           cellRenderer: ActionCellRenderer,
@@ -171,17 +167,17 @@ export default function UserListTable() {
           filter: false,
         },
       ].filter(Boolean),
-    [isMobile, handleShowDetails, handleOpenDeleteDialog]
+    [isMobile, t]
   );
 
   return (
     <>
-      <div style={{ width: "100%", height: "100%" }} className=" my-8">
+      <div style={{ width: "100%", height: "100%" }} className="my-8">
         <div className="p-2 rounded-lg border shadow-sm flex gap-2 mb-4 max-w-sm">
           <Search />
           <input
             type="text"
-            placeholder="ابحث عن مستخدم"
+            placeholder={t("searchPlaceholder")}
             className="outline-none w-full"
             onChange={(e) => setSearchInput(e.target.value)}
           />
@@ -191,29 +187,32 @@ export default function UserListTable() {
           columnDefs={colDefs}
           domLayout="autoHeight"
           defaultColDef={{ sortable: true, filter: false }}
-          pagination={isMobile ? false : true}
+          pagination={!isMobile}
           quickFilterText={searchInput}
         />
       </div>
 
-      {/* بوب أب تأكيد الحذف */}
       <Dialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>تأكيد الحذف</DialogTitle>
+            <DialogTitle>{t("confirmDelete")}</DialogTitle>
           </DialogHeader>
           {selectedUser && (
-            <p>هل أنت متأكد أنك تريد حذف المستخدم: {selectedUser.full_name}؟</p>
+            <p>
+              {t("confirmDeleteMessage", {
+                name: selectedUser.full_name,
+              })}
+            </p>
           )}
           <DialogFooter className="flex gap-2 justify-end">
             <Button
               variant="outline"
               onClick={() => setIsDeleteDialogOpen(false)}
             >
-              إلغاء
+              {t("cancel")}
             </Button>
             <Button variant="destructive" onClick={handleConfirmDelete}>
-              حذف
+              {t("delete")}
             </Button>
           </DialogFooter>
         </DialogContent>

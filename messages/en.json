@@ -3,5 +3,81 @@
     "title": "welcome",
     "email": "email",
     "password": "password"
+  },
+
+  "Cards": {
+    "total": "Total employees",
+    "attendanceRate": "Attendance rate this month",
+    "excellent": "Excellent performance",
+    "notGood": "Needs improvement",
+    "absenceRate": "Absence rate this month",
+    "high": "High",
+    "acceptable": "Within the acceptable"
+  },
+
+  "createUser": {
+    "fullName": "Full Name",
+    "email": "Email",
+    "password": "Password",
+    "role": "Role",
+    "selectRole": "Select role",
+    "roles": {
+      "admin": "Admin",
+      "developer": "Developer",
+      "it": "IT",
+      "other": "Other"
+    },
+    "cancel": "Cancel",
+    "submit": "Create User",
+    "loading": "Creating..."
+  },
+
+  "userListTable": {
+    "searchPlaceholder": "Search for a user",
+    "viewDetails": "View details",
+    "deleteUser": "Delete user",
+    "deleteSuccess": "User deleted successfully",
+    "deleteError": "An error occurred while deleting",
+    "confirmDelete": "Delete Confirmation",
+    "confirmDeleteMessage": "Are you sure you want to delete user: {name}?",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "columns": {
+      "number": "#",
+      "name": "Name",
+      "role": "Role",
+      "status": "Status",
+      "actions": "Actions"
+    },
+    "status": {
+      "loggedOut": "Logged out",
+      "present": "Present",
+      "notYet": "Not yet arrived"
+    }
+  },
+  "calender": {
+    "week": "Week",
+    "month": "Month",
+    "last3months": "Last 3 months",
+    "loading": "Loading...",
+    "attendanceDays": "Attendance ",
+    "absenceDays": "Absence ",
+    "attendanceRate": " Rate",
+    "totalWorkHours": " Work Hours ",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "present": "Present",
+    "absent": "Absent",
+    "checkIn": "Check In",
+    "checkOut": "Check Out",
+    "duration": "Duration",
+    "close": "Close",
+    "h": "Hour",
+    "m": "minuts"
   }
 }

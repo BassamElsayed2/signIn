@@ -41,13 +41,17 @@ const data = {
   },
   navMain: [
     {
-      title: "الرئيسيه",
-      url: "/",
+      title_ar: "الرئيسيه",
+      title_en: "Home",
+      url_ar: "/ar/admin",
+      url_en: "/en/admin",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "فريق العمل",
-      url: "/admin/team",
+      title_ar: "فريق العمل",
+      title_en: "Team ",
+      url_ar: "/ar/admin/team",
+      url_en: "/en/admin/team",
       icon: ListIcon,
     },
   ],
@@ -73,11 +77,8 @@ export function AppSidebar({ ...props }) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        {/* <NavDocuments items={data.documents} /> */}
-        {/* <NavSecondary items={data.navSecondary} className="mt-auto" /> */}
       </SidebarContent>
       <SidebarFooter>
-        {/* <NavUser user={data.user} /> */}
         <SignOutButton />
       </SidebarFooter>
     </Sidebar>

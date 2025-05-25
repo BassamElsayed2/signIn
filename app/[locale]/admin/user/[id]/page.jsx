@@ -5,13 +5,15 @@ import { notFound } from "next/navigation";
 import HistoryCalendar from "@/components/HistoryCalendar";
 import { toggleOutdoor } from "@/app/actions/disableOutdoor";
 
-// إضافة Google Maps React component
-// يمكن تستخدم مكتبة google-maps-react أو @react-google-maps/api
-// هنا مثال بسيط باستخدام iframe مباشر للخريطة
+import { getLocale } from "next-intl/server";
 
 export default async function AdminUserDetailPage({ params }) {
   const supabase = await createClient();
   const userId = params.id;
+
+  const locale = params.locale;
+
+  console.log(locale);
 
   // جلب بيانات المستخدم (profile)
   const { data: profile, error: profileError } = await supabase
@@ -34,7 +36,7 @@ export default async function AdminUserDetailPage({ params }) {
   // دالة لحساب حالة الحضور
   const getArrivalStatus = () => {
     if (!attendance || attendance.length === 0) {
-      return "لم يحضر بعد";
+      return locale == "en" ? "No Show" : "لم يحضر بعد";
     }
 
     const lastAttendanceDate = new Date(attendance[0].timestamp);
@@ -51,9 +53,9 @@ export default async function AdminUserDetailPage({ params }) {
         .getMinutes()
         .toString()
         .padStart(2, "0");
-      return `وصل الساعة: ${hours}:${minutes}`;
+      return ` ${hours}:${minutes}`;
     } else {
-      return "لم يحضر بعد";
+      return locale == "en" ? "Not arrived yet" : "لم يحضر بعد";
     }
   };
 
@@ -76,20 +78,26 @@ export default async function AdminUserDetailPage({ params }) {
   console.log(profile.outDoor);
 
   return (
-    <div className="w-full h-screen p-4">
+    <div className="w-full h-full p-4">
       <div className="rounded-2xl p-6 space-y-6">
         <div className="grid grid-cols-2 gap-4 text-gray-700">
           <div>
-            <p className="font-semibold">:الدور</p>
+            <p className="font-semibold">
+              {locale == "en" ? "Role:" : ":الدور"}
+            </p>
             <p>{profile.role}</p>
           </div>
           <div>
-            <p className="font-semibold">:الاسم</p>
+            <p className="font-semibold">
+              {locale == "en" ? "Name:" : ":الاسم"}
+            </p>
             <p>{profile.full_name}</p>
           </div>
 
           <div>
-            <p className="font-semibold">وقت الوصول:</p>
+            <p className="font-semibold">
+              {locale == "en" ? "Arrival Time:" : "وقت الوصول:"}
+            </p>
             <p>{getArrivalStatus()}</p>
           </div>
         </div>
@@ -105,14 +113,18 @@ export default async function AdminUserDetailPage({ params }) {
             }`}
           >
             {profile.outDoor
-              ? "تعطيل وضع خارج النطاق"
+              ? locale == "en"
+                ? "Disable Outdoor Mode"
+                : "تعطيل وضع خارج النطاق"
+              : locale == "en"
+              ? "Enable Outdoor Mode"
               : "تفعيل وضع خارج النطاق"}
           </button>
         </form>
 
         <div>
           <p className="font-semibold text-gray-700 mb-2">
-            الموقع على الخريطة:
+            {locale == "en" ? "Location on Map:" : "الموقع على الخريطة:"}
           </p>
           <div className="w-full h-96 bg-gray-200 rounded-lg flex items-center justify-center text-gray-500">
             {showMap() && lastLocation ? (
@@ -122,21 +134,29 @@ export default async function AdminUserDetailPage({ params }) {
                 loading="lazy"
                 allowFullScreen
                 src={`https://www.google.com/maps?q=${lastLocation.latitude},${lastLocation.longitude}&hl=es;z=14&output=embed`}
-                title="موقع المستخدم"
+                title={locale == "en" ? "User Location" : "موقع المستخدم"}
               ></iframe>
             ) : (
-              <p>لا توجد بيانات حضور اليوم لعرض الموقع</p>
+              <p>
+                {locale == "en"
+                  ? "No attendance data today to show location"
+                  : "لا توجد بيانات حضور اليوم لعرض الموقع"}
+              </p>
             )}
           </div>
         </div>
 
         <div className="max-w-4xl mx-auto p-6 pt-28">
           <div className="bg-white rounded-2xl shadow-lg p-6">
-            <h2 className="text-2xl font-bold mb-6">📅 تقويم الحضور</h2>
+            <h2 className="text-2xl font-bold mb-6">
+              {locale == "en" ? "Attendance Calendar" : "📅 تقويم الحضور"}
+            </h2>
             {userId ? (
               <HistoryCalendar userId={userId} />
             ) : (
-              <p className="text-center">جاري التحميل...</p>
+              <p className="text-center">
+                {locale === "en" ? "Loading..." : "جاري التحميل..."}
+              </p>
             )}
           </div>
         </div>

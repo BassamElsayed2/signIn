@@ -8,7 +8,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { login } from "@/app/[locale]/login/actions";
 import { Eye, EyeOff } from "lucide-react";
-import {useTranslations} from 'next-intl';
+import { useTranslations } from "next-intl";
+import LanguageToggle from "./LanguageToggle";
 
 export function LoginForm({ className, ...props }) {
   const [state, formAction] = useActionState(login, { error: null });
@@ -25,6 +26,10 @@ export function LoginForm({ className, ...props }) {
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
+      <div className="flex justify-end">
+        <LanguageToggle />
+      </div>
+
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
           <form className="p-6 md:p-8" action={handleSubmit}>
@@ -34,7 +39,7 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email">الايميل</Label>
+                <Label htmlFor="email">{t("email")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -45,7 +50,7 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password">كلمة المرور</Label>
+                <Label htmlFor="password">{t("password")}</Label>
                 <div className="relative">
                   <Input
                     id="password"

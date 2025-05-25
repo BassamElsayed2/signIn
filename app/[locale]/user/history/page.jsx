@@ -4,9 +4,11 @@ import { useEffect, useState } from "react";
 import NavBar from "@/components/NavBar";
 import HistoryCalendar from "@/components/HistoryCalendar";
 import { createClient } from "@/utils/supabase/client";
+import { useLocale } from "next-intl";
 
 export default function HistoryPage() {
   const [userId, setUserId] = useState(null);
+  const locale = useLocale();
 
   useEffect(() => {
     const getUser = async () => {
@@ -24,7 +26,9 @@ export default function HistoryPage() {
       <NavBar />
       <div className="max-w-4xl mx-auto p-6 pt-28">
         <div className="bg-white rounded-2xl shadow-lg p-6">
-          <h2 className="text-2xl font-bold mb-6">📅 تقويم الحضور</h2>
+          <h2 className="text-2xl font-bold mb-6">
+            {locale == "en" ? "Attendance Calendar" : "📅 تقويم الحضور"}
+          </h2>
           {userId ? (
             <HistoryCalendar userId={userId} />
           ) : (

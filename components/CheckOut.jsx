@@ -1,11 +1,13 @@
 "use client";
 
 import { logoutAction } from "@/app/actions/checkout";
+import { useLocale } from "next-intl";
 import { useTransition } from "react";
 import { toast } from "sonner";
 
 export default function LogoutButton({ attendanceId, isTimeOver }) {
   const [isPending, startTransition] = useTransition();
+  const locale = useLocale();
 
   const handleLogout = () => {
     if (isTimeOver) {
@@ -16,13 +18,17 @@ export default function LogoutButton({ attendanceId, isTimeOver }) {
       toast(
         (t) => (
           <div className="flex flex-col gap-2">
-            <p>هل تريد الخروج قبل الموعد المحدد؟</p>
+            <p>
+              {locale == "en"
+                ? "Do you want to leave early?"
+                : "هل تريد الخروج قبل الموعد المحدد؟"}{" "}
+            </p>
             <div className="flex gap-2 justify-end">
               <button
                 className="px-3 py-1 bg-gray-200 rounded"
                 onClick={() => toast.dismiss(t)}
               >
-                إلغاء
+                {locale == "en" ? "Cancle" : "إلغاء"}
               </button>
               <button
                 className="px-3 py-1 bg-red-600 text-white rounded"
@@ -31,7 +37,7 @@ export default function LogoutButton({ attendanceId, isTimeOver }) {
                   startTransition(() => logoutAction(attendanceId));
                 }}
               >
-                نعم، خروج
+                {locale == "en" ? "yes , Quit" : " نعم، خروج"}
               </button>
             </div>
           </div>
@@ -49,7 +55,13 @@ export default function LogoutButton({ attendanceId, isTimeOver }) {
       disabled={isPending}
       className="w-full bg-red-600 hover:bg-red-700 text-white py-2 rounded mt-6 transition"
     >
-      {isPending ? "جارٍ تسجيل الخروج..." : "🚪  أنهاء اليوم"}
+      {isPending
+        ? locale == "en"
+          ? "Loading..."
+          : "جارٍ تسجيل الخروج..."
+        : locale == "en"
+        ? "Finish Today 🚪"
+        : "🚪  أنهاء اليوم"}
     </button>
   );
 }
