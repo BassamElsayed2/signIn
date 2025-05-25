@@ -4,8 +4,9 @@ import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { supabase } from "@/lib/supabase";
 import { createClient } from "@/utils/supabase/server";
 import { redirect } from "next/navigation";
+import { NextIntlClientProvider } from "next-intl";
 import React from "react";
-
+import { useTranslations } from "next-intl";
 import { AdminDataProvider } from "@/components/AdminDataContext";
 
 export default async function AdminLayout({ children }) {
@@ -36,14 +37,28 @@ export default async function AdminLayout({ children }) {
   };
 
   return (
+      
     <SidebarProvider>
       <AdminDataProvider value={contextValue}>
-        <AppSidebar variant="inset" />
+        <AppSidebar variant="inset" translation={
+          {
+            admin: {
+              sidebar: {
+                dashboard: "Dashboard",
+                team: "Team",
+                documents: "Documents",
+                settings: "Settings",
+                signOut: "Sign Out",
+              },
+            },
+          }
+        } />
         <SidebarInset>
           <SiteHeader name={profile.full_name} />
           {children}
         </SidebarInset>
       </AdminDataProvider>
     </SidebarProvider>
+    
   );
 }

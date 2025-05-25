@@ -1,14 +1,14 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-
+import { useTranslations } from "next-intl";
 import { createClient } from "@/utils/supabase/client";
 
 const supabase = createClient();
 
 export default function SignOutButton() {
   const router = useRouter();
-
+const t = useTranslations("admin.sidebar");
   const handleSignOut = async () => {
     await supabase.auth.signOut();
     router.push("/login"); // بعد تسجيل الخروج، يرجع لصفحة تسجيل الدخول
@@ -33,7 +33,7 @@ export default function SignOutButton() {
           d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9"
         />
       </svg>
-      تسجيل الخروج
+    {t("logout")}
     </button>
   );
 }

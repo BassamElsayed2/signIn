@@ -18,6 +18,8 @@ import {
   UsersIcon,
 } from "lucide-react";
 
+import { useTranslations } from "next-intl";
+
 import {
   Sidebar,
   SidebarContent,
@@ -33,6 +35,10 @@ import { NavSecondary } from "./NavSecondary";
 import { NavUser } from "./NavUser";
 import SignOutButton from "./SignOut";
 
+export function AppSidebar({ ...props }) {
+  
+const t = useTranslations("admin.sidebar");
+
 const data = {
   user: {
     name: "shadcn",
@@ -41,19 +47,18 @@ const data = {
   },
   navMain: [
     {
-      title: "الرئيسيه",
+      title: t("home"),
       url: "/",
       icon: LayoutDashboardIcon,
     },
     {
-      title: "فريق العمل",
+      title: t("team"),
       url: "/admin/team",
       icon: ListIcon,
     },
   ],
 };
 
-export function AppSidebar({ ...props }) {
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>

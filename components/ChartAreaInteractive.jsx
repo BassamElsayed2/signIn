@@ -27,6 +27,7 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 
 export default function AttendanceBarChart() {
   const { users, attendance } = useAdminData();
@@ -34,6 +35,7 @@ export default function AttendanceBarChart() {
 const isMobile = useIsMobile();
   const nonAdminUsers = users.filter((user) => user.role !== "admin");
   const totalUsers = nonAdminUsers.length;
+const t = useTranslations("admin");
 
   const getDatesBetween = (start, end) => {
     const dates = [];
@@ -109,16 +111,16 @@ const isMobile = useIsMobile();
       <Card >
         <CardHeader className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <CardTitle>تغير نسب الحضور والغياب</CardTitle>
+            <CardTitle>{t("attendance_chart_title")}</CardTitle>
           </div>
           <Select value={range} onValueChange={setRange}>
             <SelectTrigger className="w-[180px]">
-              <SelectValue placeholder="اختر المدى الزمني" />
+              <SelectValue placeholder={t("select_range_placeholder")} />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="week">آخر أسبوع</SelectItem>
-              <SelectItem value="month">آخر شهر</SelectItem>
-              <SelectItem value="3months">آخر 3 شهور</SelectItem>
+              <SelectItem value="week">{t("range_week")}</SelectItem>
+              <SelectItem value="month">{t("range_month")}</SelectItem>
+              <SelectItem value="3months">{t("range_3months")}</SelectItem>
             </SelectContent>
           </Select>
         </CardHeader>
@@ -131,8 +133,8 @@ const isMobile = useIsMobile();
              {!isMobile &&  <YAxis domain={[0, 100]} tickFormatter={(v) => `${v}%`} />}
               <Tooltip formatter={(value) => `${value}%`} />
               <Legend />
-              <Bar dataKey="الحضور" fill="#000" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="الغياب" fill="#6c757d" radius={[4, 4, 0, 0]} />
+              <Bar name={t("attendance")} dataKey="الحضور" fill="#000" radius={[4, 4, 0, 0]} />
+              <Bar name={t("absence")} dataKey="الغياب" fill="#6c757d" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
         </CardContent>

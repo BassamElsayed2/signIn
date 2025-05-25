@@ -24,6 +24,20 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 
+import { useEffect, useState } from "react";
+
+function useSidebarDirection() {
+  const [side, setSide] = useState("left");
+
+  useEffect(() => {
+    const dir = document.documentElement.getAttribute("dir") || "ltr";
+    setSide(dir === "rtl" ? "right" : "left");
+  }, []);
+
+  return side;
+}
+
+
 const SIDEBAR_COOKIE_NAME = "sidebar_state";
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7;
 const SIDEBAR_WIDTH = "16rem";
@@ -135,7 +149,7 @@ function SidebarProvider({
 }
 
 function Sidebar({
-  side = "right",
+  side = useSidebarDirection(),
   variant = "sidebar",
   collapsible = "offcanvas",
   className,

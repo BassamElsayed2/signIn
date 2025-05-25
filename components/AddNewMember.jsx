@@ -1,5 +1,5 @@
 "use client";
-
+import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 import { Button } from "./ui/button";
 import {
@@ -14,14 +14,14 @@ import CreateUserForm from "./CreateUserForm";
 
 export default function AddNewMember() {
   const [open, setOpen] = useState(false);
-
+const t = useTranslations("admin");
   return (
     <div>
-      <Button onClick={() => setOpen(true)}>اضف موظف جديد +</Button>
+      <Button onClick={() => setOpen(true)}>{t("add_new_member_button")}</Button>
       <Dialog open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>أضف موظف جديد</DialogTitle>
+            <DialogTitle>{t("add_new_member_title")}</DialogTitle>
 
             <CreateUserForm setOpen={setOpen} />
           </DialogHeader>
