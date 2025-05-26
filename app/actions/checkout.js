@@ -13,6 +13,6 @@ export async function logoutAction(attendanceId) {
     .update({ logout_time: logoutTime })
     .eq("id", attendanceId);
 
-  revalidatePath("/user/history");
-  redirect("/user/history");
+  revalidatePath(`/${locale}/user/history`);
+  redirect(`/${locale}/user/history`);
 }

@@ -38,7 +38,7 @@ export default function CreateUserForm({ setOpen }) {
           ? "User created successfully"
           : "تم إنشاء المستخدم بنجاح"
       );
-      router.push("/admin");
+      router.push(`/${locale}/admin`);
     } else {
       setError(result.error);
       toast.error(
