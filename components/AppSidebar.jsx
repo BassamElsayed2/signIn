@@ -32,7 +32,7 @@ import { NavDocuments } from "./NavDocuments";
 import { NavSecondary } from "./NavSecondary";
 import { NavUser } from "./NavUser";
 import SignOutButton from "./SignOut";
-
+import { useLocale } from "next-intl";
 const data = {
   user: {
     name: "shadcn",
@@ -58,6 +58,7 @@ const data = {
 };
 
 export function AppSidebar({ ...props }) {
+  const locale = useLocale();
   return (
     <Sidebar collapsible="offcanvas" {...props}>
       <SidebarHeader>
@@ -67,9 +68,9 @@ export function AppSidebar({ ...props }) {
               asChild
               className="data-[slot=sidebar-menu-button]:!p-1.5"
             >
-              <a href="/">
+              <a href={`${locale}/admin`}>
                 <ArrowUpCircleIcon className="h-5 w-5" />
-                <span className="text-base font-semibold">ENS.</span>
+                <span className="text-base font-semibold">ENS</span>
               </a>
             </SidebarMenuButton>
           </SidebarMenuItem>
