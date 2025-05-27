@@ -22,7 +22,7 @@ export function LoginForm({ className, ...props }) {
     });
   };
 
-  const t = useTranslations("login");
+  const t = useTranslations();
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
@@ -35,11 +35,11 @@ export function LoginForm({ className, ...props }) {
           <form className="p-6 md:p-8" action={handleSubmit}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
-                <h1 className="text-2xl font-bold">{t("title")}</h1>
+                <h1 className="text-2xl font-bold">{t("login.title")}</h1>
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="email">{t("email")}</Label>
+                <Label htmlFor="email">{t("login.email")}</Label>
                 <Input
                   id="email"
                   type="email"
@@ -50,7 +50,7 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="password">{t("password")}</Label>
+                <Label htmlFor="password">{t("login.password")}</Label>
                 <div className="relative">
                   <Input
                     id="password"
@@ -71,11 +71,12 @@ export function LoginForm({ className, ...props }) {
               </div>
 
               {state?.error && (
-                <div className="text-sm text-red-500">{state.error}</div>
-              )}
+  <div className="text-sm text-red-500">{t(`login.${state.error}`)}</div>
+)}
+
 
               <Button type="submit" className="w-full" disabled={isPending}>
-                {isPending ? "جاري الدخول..." : "تسجيل الدخول"}
+                {isPending ? t("login.loggingIn") : t("login.login")}
               </Button>
             </div>
           </form>

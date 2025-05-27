@@ -10,6 +10,7 @@ export async function login(prevState, formData) {
 
   const locale = await getLocale(); // ✅ إصلاح هنا
 
+
   const data = {
     email: formData.get("email"),
     password: formData.get("password"),
@@ -19,8 +20,9 @@ export async function login(prevState, formData) {
     await supabase.auth.signInWithPassword(data);
 
   if (signInError) {
-    return { error: "البريد الإلكتروني أو كلمة المرور غير صحيحة." };
-  }
+  return { error: "errorInvalid" }; // فقط المفتاح
+}
+
 
   const userId = signInData.user.id;
 
@@ -36,9 +38,7 @@ export async function login(prevState, formData) {
 
   revalidatePath(`/${locale}/user`, "layout");
 
-  if (profile.role === "admin") {
-    redirect(`/${locale}/admin`);
-  } else {
-    redirect(`/${locale}/user`);
-  }
+  const targetPath = profile.role === "admin" ? "admin" : "user";
+redirect(`/${locale}/${targetPath}`);
+
 }

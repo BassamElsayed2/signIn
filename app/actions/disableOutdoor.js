@@ -25,5 +25,5 @@ export async function toggleOutdoor(formData) {
     .update({ outDoor: newValue })
     .eq("id", userId);
 
-  revalidatePath(`/admin/user/${userId}`);
+  revalidatePath(`/${locale}/admin/user/${userId}`);
 }

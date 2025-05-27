@@ -3,12 +3,13 @@ import LogoutButton from "@/components/CheckOut";
 import NavBar from "@/components/NavBar";
 
 import { createClient } from "@/utils/supabase/server";
-import { getLocale } from "next-intl/server";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 
 export default async function CheckinPage({ params }) {
   const locale = params.locale;
+  const t = await getTranslations({ locale });
 
   const supabase = await createClient();
   const {
@@ -16,7 +17,7 @@ export default async function CheckinPage({ params }) {
     error,
   } = await supabase.auth.getUser();
 
-  if (error || !user) redirect("/login");
+  if (error || !user) redirect(`/${locale}/login`);
 
   const { data: profile } = await supabase
     .from("profiles")
@@ -24,7 +25,7 @@ export default async function CheckinPage({ params }) {
     .eq("id", user.id)
     .single();
 
-  if (profile?.role == "admin") redirect("/admin");
+  if (profile?.role == "admin") redirect(`/${locale}/admin`);
 
   const { data: records } = await supabase
     .from("attendance")
@@ -47,23 +48,24 @@ export default async function CheckinPage({ params }) {
   let fullAddress = lastRecord.address;
 
   if (lastRecord.logout_time) {
-    redirect("/user/history");
+    redirect(`/${locale}/user/history`);
   }
 
   if (latitude && longitude && !fullAddress) {
-    try {
-      const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json`
-      );
-      const data = await res.json();
-      fullAddress = data.display_name;
-    } catch (error) {
-      console.error(
-        locale == "en" ? "Somthing went wrong" : "حدث خطأ أثناء جلب العنوان:",
-        error
-      );
-    }
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/reverse?lat=${latitude}&lon=${longitude}&format=json&accept-language=${locale}`
+    );
+    const data = await res.json();
+    fullAddress = data.display_name;
+  } catch (error) {
+    console.error(
+      locale == "en" ? "Something went wrong" : "حدث خطأ أثناء جلب العنوان:",
+      error
+    );
   }
+}
+
 
   function getWorkingHoursByRole(role) {
     switch (role) {
@@ -86,38 +88,37 @@ export default async function CheckinPage({ params }) {
     <div className="pt-26 p-8 max-w-xl mx-auto bg-white rounded-xl shadow-md text-center">
       <NavBar />
       <h2 className="text-3xl font-semibold text-gray-900 mb-6">
-        {locale == "en"
-          ? "Attendance registration details"
-          : "تفاصيل تسجيل الحضور"}
+        {t("attendanceDetails")}
       </h2>
 
       <div className="space-y-4 text-gray-800">
         <p className="text-lg">
-          <span className="font-semibold text-gray-900">
-            {locale == "en" ? "👤 Name: " : "👤 الاسم:"}
-          </span>{" "}
+          <span className="font-semibold text-gray-900">👤 {t("name")}:</span>{" "}
           {profile?.full_name}
         </p>
+
         <p className="text-lg">
-          <span className="font-semibold text-gray-900">
-            {locale == "en" ? "🕒 Time:" : "🕒 الوقت:"}
-          </span>{" "}
-          {new Date(lastRecord.timestamp).toLocaleTimeString("ar-EG", {
-            hour: "2-digit",
-            minute: "2-digit",
-          })}
+          <span className="font-semibold text-gray-900">🗓️ {t("dateTime")}:</span>{" "}
+          {new Date(lastRecord.timestamp).toLocaleString(
+            locale === "ar" ? "ar-EG" : "en-US",
+            {
+              year: "numeric",
+              month: "2-digit",
+              day: "2-digit",
+              hour: "2-digit",
+              minute: "2-digit",
+            }
+          )}
         </p>
 
         {fullAddress ? (
           <p className="text-lg">
-            <span className="font-semibold text-gray-900">
-              {locale == "en" ? "📍 Location:" : "📍 العنوان:"}
-            </span>{" "}
+            <span className="font-semibold text-gray-900">📍 {t("address")}:</span>{" "}
             {fullAddress}
           </p>
         ) : (
           <p className="text-lg">
-            <span className="font-semibold text-gray-900">📍 الإحداثيات:</span>{" "}
+            <span className="font-semibold text-gray-900">📍 {t("coordinates")}:</span>{" "}
             {latitude}, {longitude}
           </p>
         )}
@@ -126,7 +127,7 @@ export default async function CheckinPage({ params }) {
       {latitude && longitude && (
         <div className="w-full h-64 mt-6 rounded-lg overflow-hidden border border-gray-400">
           <iframe
-            title="خريطة الموقع"
+            title={t("mapTitle")}
             width="100%"
             height="100%"
             style={{ border: 0 }}
@@ -153,9 +154,9 @@ export default async function CheckinPage({ params }) {
         attendanceId={lastRecord.id}
       />
 
-      <Link href="/user/history">
+      <Link href={`/${locale}/user/history`}>
         <button className="w-full bg-gray-900 text-white py-2 rounded hover:bg-gray-800 mt-6 transition">
-          {locale == "en" ? "📜 View attendance record" : "📜 عرض سجل الحضور"}
+          {t("viewAttendanceRecord")}
         </button>
       </Link>
     </div>

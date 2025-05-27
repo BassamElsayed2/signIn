@@ -24,7 +24,7 @@ export default async function UserPage({ params }) {
     .eq("id", user.id)
     .single();
 
-  if (profile?.role == "admin") redirect("/admin");
+  if (profile?.role == "admin") redirect(`/${locale}/admin`);
 
   // حساب بداية اليوم
   const today = new Date();
@@ -40,7 +40,7 @@ export default async function UserPage({ params }) {
 
   // لو سجل اليوم، نعيد التوجيه لصفحة تفاصيل الحضور
   if (existingRecords && existingRecords.length > 0) {
-    redirect("/user/checkin"); // غيّرها حسب مسار صفحتك لعرض تفاصيل الحضور
+    redirect(`/${locale}/user/checkin`); // غيّرها حسب مسار صفحتك لعرض تفاصيل الحضور
   }
 
   return (

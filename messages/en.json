@@ -1,10 +1,12 @@
 {
   "login": {
-    "title": "welcome",
-    "email": "email",
-    "password": "password"
+    "title": "Welcome",
+    "email": "Email",
+    "password": "Password",
+    "login": "Login",
+    "loggingIn": "Logging in...",
+    "errorInvalid": "Invalid email or password."
   },
-
   "Cards": {
     "total": "Total employees",
     "attendanceRate": "Attendance rate this month",
@@ -14,7 +16,6 @@
     "high": "High",
     "acceptable": "Within the acceptable"
   },
-
   "createUser": {
     "fullName": "Full Name",
     "email": "Email",
@@ -31,7 +32,6 @@
     "submit": "Create User",
     "loading": "Creating..."
   },
-
   "userListTable": {
     "searchPlaceholder": "Search for a user",
     "viewDetails": "View details",
@@ -79,5 +79,14 @@
     "close": "Close",
     "h": "Hour",
     "m": "minuts"
-  }
+   
+  },
+  "attendanceDetails": "Attendance registration details",
+  "name": "Name",
+  "dateTime": "Date & Time",
+  "address": "Location",
+  "coordinates": "Coordinates",
+  "mapTitle": "Location Map",
+  "viewAttendanceRecord": "📜 View attendance record",
+   "back": "Back"
 }
