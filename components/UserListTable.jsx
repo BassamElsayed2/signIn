@@ -5,6 +5,7 @@ import { useAdminData } from "./AdminDataContext";
 import { AgGridReact } from "ag-grid-react";
 import { ModuleRegistry, AllCommunityModule } from "ag-grid-community";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useLocale } from "next-intl";
 
 ModuleRegistry.registerModules([AllCommunityModule]);
 
@@ -26,7 +27,7 @@ import { useTranslations } from "next-intl";
 export default function UserListTable() {
   const t = useTranslations("userListTable");
   const { users, attendance, setUsers, fetchAdminData } = useAdminData();
-
+const locale = useLocale();
   const today = new Date().toISOString().split("T")[0];
   const isMobile = useIsMobile();
   const [selectedUser, setSelectedUser] = useState(null);
@@ -56,10 +57,10 @@ export default function UserListTable() {
       alert(t("deleteError") + ": " + (error.message || error));
     }
   };
-
+console.log("locale is", locale);
   const handleShowDetails = useCallback(
     (user) => {
-      router.push(`/admin/user/${user.id}`);
+      router.push(`/${locale}/admin/user/${user.id}`);
     },
     [router]
   );
